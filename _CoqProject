@@ -1,0 +1,12 @@
+-R /home/jdc/hott/HoTT/theories HoTT
+-R . Top
+-arg -noinit
+-arg -indices-matter
+-arg -native-compiler -arg no
+
+NonAccessible.v
+Smallness.v
+CORS.v
+Conn.v
+OFS.v
+misc.v
