@@ -60,6 +60,19 @@ Proof.
   snrapply equiv_functor_sigma'; intros; apply equiv_smalltype.
 Defined.
 
+(* If a map has small codomain and fibers, then the domain is small. *)
+(* No constraints on i and j. *)
+Definition issmall_codomain_fibers_small@{i j} {X Y : Type@{j}}
+           (f : X -> Y)
+           (sY : IsSmall@{i j} Y)
+           (sF : forall y : Y, IsSmall@{i j} (hfiber f y))
+  : IsSmall@{i j} X.
+Proof.
+  rapply issmall_equiv_issmall.
+  - exact (equiv_fibration_replacement f)^-1%equiv.
+  - apply sigma_closed_issmall; assumption.
+Defined.
+
 (* Propositional Resizing says that every (-1)-truncated type is small. *)
 (* No constraints on i and j. *)
 Definition issmall_hprop@{i j} `{PropResizing} (X : Type@{j}) (T : IsTrunc (-1) X)
@@ -129,6 +142,20 @@ Proof.
     * apply lsA.
     * intro p.
       apply lsB.
+Defined.
+
+(* If a map has locally small codomain and fibers, then the domain is locally small. *)
+(* i < k <= u, j <= k, j < u. *)
+Definition islocally_small_codomain_fibers_locally_small@{i j k u} (n : nat)
+           {X Y : Type@{j}}
+           (f : X -> Y)
+           (sY : IsLocallySmall@{i j k} n Y)
+           (sF : forall y : Y, IsLocallySmall@{i j k} n (hfiber f y))
+  : IsLocallySmall@{i j k} n X.
+Proof.
+  rapply islocally_small_equiv_islocally_small@{i j j k u}.
+  - exact (equiv_fibration_replacement f)^-1%equiv.
+  - apply sigma_closed_islocally_small; assumption.
 Defined.
 
 (* A small type is n-locally small for all n. *)
@@ -201,13 +228,11 @@ Definition islocally_small_truncmap@{i j k u} `{PropResizing} (n : trunc_index) 
            (f : X -> Y) (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
 Proof.
-  rapply islocally_small_equiv_islocally_small@{i j j k u}.
-  - exact (equiv_fibration_replacement f)^-1%equiv.
-  - apply sigma_closed_islocally_small.
-    * exact ls.
-    * intro y.
-      apply islocally_small_trunc.
-      apply T.
+  apply (islocally_small_codomain_fibers_locally_small@{i j k u} _ f).
+  - exact ls.
+  - intro y.
+    apply islocally_small_trunc.
+    apply T.
 Defined.
 
 (* This is Lemma 2.3 from the draft. *)
@@ -240,8 +265,7 @@ Proof.
     + apply (issmall_equiv_issmall (Trunc_functor_equiv@{i j k} _ (equiv_smalltype sX))).
       apply issmall_in.
   - intros [lsX sTrX].
-    apply (issmall_equiv_issmall (equiv_fibration_replacement (@tr n.+1 X))^-1%equiv).
-    apply sigma_closed_issmall.
+    apply (issmall_codomain_fibers_small (@tr n.+1 X)).
     + exact sTrX.
     + intro y.
       apply (issmall_truncmap_connected@{i j k u} n pr1).
