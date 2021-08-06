@@ -1,6 +1,8 @@
 (* Some things about orthogonal factorization systems. *)
 
 Require Import HoTT.
+(* This redundant line is so that we pick up the intended [factor1] and [factor2]. If Sets/Ordinals.v is changed, we can remove the next line. *)
+Require Import HoTT.Factorization.
 
 Definition isequiv_in_left_and_right (F : FactorizationSystem)
            {X Y : Type} (f : X -> Y)

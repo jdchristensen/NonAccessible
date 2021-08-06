@@ -47,7 +47,7 @@ Proof.
   srapply (conn_point_elim (-1) (A:=A)); assumption.
 Defined.
 
-(** This is a converse to [isconnected_loops_functor] when [f] is surjective. In fact, these conditions are necessary and sufficient. *)
+(** This is a converse to [isconnected_fmap_loops] when [f] is surjective. In fact, these conditions are necessary and sufficient. *)
 Definition isconn_map_isconn_map_ap `{Univalence} {n : trunc_index}
            {A B : Type} (f : A -> B) `{S : IsSurjection f}
            (CM : forall x y : A, IsConnMap n (@ap _ _ f x y))
@@ -64,10 +64,10 @@ Proof.
   apply CM.
 Defined.
 
-(** This is a converse to [isconnected_loops_functor] in the pointed, 0-connected case. *)
-Definition isconn_map_isconn_map_loops_functor `{Univalence} {n : trunc_index}
+(** This is a converse to [isconnected_fmap_loops] in the pointed, 0-connected case. *)
+Definition isconn_map_isconn_map_fmap_loops `{Univalence} {n : trunc_index}
            {A B : pType} `{IsConnected (Tr 0) A} `{IsConnected (Tr 0) B}
-           (f : A ->* B) `{IsConnMap n _ _ (loops_functor f)}
+           (f : A ->* B) `{IsConnMap n _ _ (fmap loops f)}
   : IsConnMap n.+1 f.
 Proof.
   apply isconn_map_isconn_map_ap.
@@ -84,9 +84,9 @@ Defined.
 (** A surjective map of groups induces a 0-connected map on classifying spaces.  This is true, with the same proof, when [0] is replaced with [n], but this is the only interesting case. *)
 Definition isconn_map_functor_pclassifyingspace `{U : Univalence}
            {G H : Group} (f : GroupHomomorphism G H) (S : IsSurjection f)
-  : IsConnMap (Tr 0) (functor_pclassifyingspace f).
+  : IsConnMap (Tr 0) (fmap pClassifyingSpace f).
 Proof.
-  snrapply isconn_map_isconn_map_loops_functor.
+  snrapply isconn_map_isconn_map_fmap_loops.
   1, 2: exact _.
   nrapply (cancelR_conn_map _ bloop).
   - exact _.

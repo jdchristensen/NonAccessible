@@ -1,6 +1,8 @@
 (* This is the top-level file in this development.  It uses the other files and shows that one can construct certain localizations that are not provably accessible. *)
 
 Require Import HoTT.
+(* This redundant line is so that we pick up the intended [factor1] and [factor2]. If Sets/Ordinals.v is changed, we can remove the next line. *)
+Require Import HoTT.Factorization.
 
 Require Import CORS.
 Require Import Conn.
@@ -10,6 +12,7 @@ Require Import misc.
 (* See Smallness.v for a discussion of universe variables. *)
 
 (* If i <= j and [O] is a reflective subuniverse of [Type@{j}] such that when [X] is in [Type@{i}], [O X] is i-small, then [O] restricts to a reflective subuniverse of [Type@{i}]. *)
+(* This only requires [Funext] because [O] is not assumed to unconditionally land in [HProp]s, so we can't resize the predicate defining the subuniverse unless we have [Funext].  One could also relax the requirement that the predicate lands in the universe [i]. *)
 (* i <= j *)
 Definition restrict_O@{i j} `{PropResizing} `{Funext} (O : ReflectiveSubuniverse@{j})
            (sX : forall X : Type@{i}, IsSmall@{i j} (O X))
@@ -72,7 +75,7 @@ Proof.
     + exact (fun _ => tt).
 Defined.
 
-(* Being local with respect to the extended generating set is equivalent to being n-truncated and local with respect to the original family of maps. *)
+(* Being local with respect to the extended generating set is equivalent to being n-truncated and local with respect to the original family of maps. This could be generalized as in RSS Thm 3.29. *)
 (* k < u *)
 Definition islocal_extended_generators@{k +} (n : trunc_index)
       {I : Type@{k}} {A B : I -> Type@{k}} (f : forall i, A i -> B i)
@@ -140,9 +143,10 @@ Definition rsu_from_group_surjections@{i j k u} `{PropResizing} `{Univalence}
            (S : forall i, IsSurjection (f i))
   : ReflectiveSubuniverse@{i}.
 Proof.
-  snrapply (nonaccessible_localization@{i j k u} 0 (fun i => functor_pclassifyingspace (f i))).
+  snrapply (nonaccessible_localization@{i j k u} 0).
+  4: exact (fun i => fmap pClassifyingSpace (f i)).
   intro i;
-  apply isconn_map_functor_pclassifyingspace@{j j j j j j j j j u j j j j j j j j j j j j j j j j j j j j j j j j j j u};
+  apply isconn_map_functor_pclassifyingspace@{u j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j};
   apply S.
 Defined.
 

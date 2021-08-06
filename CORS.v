@@ -1,4 +1,6 @@
 Require Import HoTT.
+(* This redundant line is so that we pick up the intended [image]. If Sets/Ordinals.v is changed, we can remove the next line. *)
+Require Import HoTT.Modalities.Modality.
 
 Require Import OFS.
 Require Import Conn.
