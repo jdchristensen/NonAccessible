@@ -82,6 +82,14 @@ Proof.
   apply (equiv_resize_hprop X)^-1%equiv.
 Defined.
 
+(* Every contractible, i.e. (-2)-truncated type, is small. *)
+(* No constraints on i and j. *)
+Definition issmall_contr@{i j} (X : Type@{j}) (T : IsTrunc (-2) X): IsSmall@{i j} X.
+Proof.
+  refine (issmall_equiv_issmall (equiv_contr_unit)^-1 _).
+  apply issmall_in.
+Defined.
+
 (* Locally small types. *)
 
 (* We say that a type [X] is 0-locally small if it is small, and (n+1)-locally small if its identity types are n-small. *)
