@@ -119,6 +119,22 @@ Proof.
     exact (snd (fst (islocal_extended_generators@{k u} n f (O X)) _)).
 Defined.
 
+(** Tests to ensure that no extra universe constraints are present.  I'm not sure if these are exhaustive... *)
+Definition test1@{i j k u}
+  := Eval hnf in let enforce_ij := Type@{i} : Type@{j} in
+                let enforce_jk := Type@{j} : Type@{k} in
+                let enforce_ku := Type@{k} : Type@{u} in @nonaccessible_localization@{i j k u}.
+Definition test2@{i j k u}
+  := Eval hnf in let enforce_ji := Type@{j} : Type@{i} in
+                let enforce_ik := Type@{i} : Type@{k} in
+                let enforce_ku := Type@{k} : Type@{u} in @nonaccessible_localization@{i j k u}.
+Definition test3@{i j u}
+  := Eval hnf in let enforce_ij := Type@{i} : Type@{j} in
+                let enforce_ju := Type@{j} : Type@{u} in @nonaccessible_localization@{i j j u}.
+Definition test4@{i k u}
+  := Eval hnf in let enforce_ik := Type@{i} : Type@{k} in
+                let enforce_ku := Type@{k} : Type@{u} in @nonaccessible_localization@{i i k u}.
+
 (* Here we just nail down the fact that the local objects are the n-truncated objects that are local with respect to the original family.  The only difference from [islocal_extended_generators] is that we have to handle the propositional resizing, and we state truncation in the universe [i] containing [X]. *)
 (* i < k < u, j <= k. *)
 Definition in_nonaccessible_localization@{i j k u} `{PropResizing} `{Univalence}
