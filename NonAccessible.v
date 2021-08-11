@@ -216,7 +216,7 @@ Definition OFS_from_family@{j} (f : LocalGenerators@{j})
   : FactorizationSystem@{j j j}.
 Admitted.
 
-(* Theorem 3.3 from the draft. The definition of OFS in the library is different from in the paper, so the proof needs to be slightly different.  In the paper, [L] is defined to be the class of maps in [Type@{i}] which are left orthogonal to [R], while here we define [L] to be the restriction of [L'] to [Type@{i}].  It follows that both definitions agree. *)
+(* Theorem 3.5 from the draft. The definition of OFS in the library is different from in the paper, so the proof needs to be slightly different.  In the paper, [L] is defined to be the class of maps in [Type@{i}] which are left orthogonal to [R], while here we define [L] to be the restriction of [L'] to [Type@{i}].  It follows that both definitions agree. *)
 (* Unfortunately, the HoTT library is currently missing too many things for this to be fully formalized.  The notion of maps being orthogonal (the unique lifting property) has not been defined.  We also need that being right orthogonal to [S^{n+1} -> 1] implies being n-truncated (similar to istrunc_allnullhomot), and that being left orthogonal to the maps that are right orthogonal to a class of (n-1)-connected maps means you are (n-1)-connected. *)
 Definition nonaccessible_OFS@{i j u} `{PropResizing} `{Univalence}
            (n : trunc_index) (I : Type@{j})

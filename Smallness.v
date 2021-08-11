@@ -183,7 +183,7 @@ Fixpoint trunc_index_to_nat (m : trunc_index) : nat
      | m'.+1 => (trunc_index_to_nat m').+1
    end.
 
-(* Under Propositional Resizing, every (n+1)-truncated type is (n+2)-locally small. *)
+(* Under Propositional Resizing, every (n+1)-truncated type is (n+2)-locally small. This is Lemma 2.2 in the draft. *)
 (* i < k <= u, j <= k, j < u. *)
 Definition islocally_small_trunc@{i j k u} `{PropResizing} (n : trunc_index) (X : Type@{j}) (T : IsTrunc n.+1 X)
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
@@ -230,7 +230,7 @@ Proof.
     + apply ls.
 Defined.
 
-(* If [f : X -> Y] is (n+1)-truncated and [Y] is (n+2)-locally small, then [X] is (n+2)-locally small.  This is Lemma 2.2 from the draft. When [n] is -2, it says that a subtype of a small type is small. *)
+(* If [f : X -> Y] is (n+1)-truncated and [Y] is (n+2)-locally small, then [X] is (n+2)-locally small.  This is Lemma 2.3 from the draft. When [n] is -2, it says that a subtype of a small type is small. *)
 (* i < k <= u, j <= k, j < u. *)
 Definition islocally_small_truncmap@{i j k u} `{PropResizing} (n : trunc_index) {X : Type@{j}} {Y : Type@{j}}
            (f : X -> Y) (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
@@ -243,7 +243,7 @@ Proof.
     apply T.
 Defined.
 
-(* This is Lemma 2.3 from the draft. *)
+(* This is Lemma 2.4 from the draft. *)
 (* i < k < u, j <= k. *)
 Definition issmall_truncmap_connected@{i j k u} `{PropResizing} `{Univalence} (n : trunc_index)
            {X Y : Type@{j}}
@@ -260,7 +260,7 @@ Proof.
   - by rapply islocally_small_truncmap@{i j k u}.
 Defined.
 
-(* This is Theorem 2.4 from the draft. *)
+(* This is Theorem 2.5 from the draft. *)
 (* i < k < u, j <= k. *)
 Definition issmall_iff_locally_small_truncated@{i j k u} `{PropResizing} `{Univalence}
            (n : trunc_index) (X : Type@{j})
@@ -282,7 +282,7 @@ Proof.
       * exact _.
 Defined.
 
-(* This is Corollary 2.5 from the draft. *)
+(* This is Corollary 2.6 from the draft. *)
 (* i < k < u, j <= k. *)
 Definition issmall_truncmap_small_truncation@{i j k u} `{PropResizing} `{Univalence} (n : trunc_index)
            {X Y : Type@{j}}
