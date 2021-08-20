@@ -120,8 +120,7 @@ Proof.
 Defined.
 
 (* It's possible to arrange this so that it involves [A : Type@{i}], [B : Type@{j}] and [IsConnmap@{k}], with [i <= k] and [j <= k], but that doesn't really add any useful generality, and is slightly messier to prove. *)
-(* k < u *)
-Definition isconnmap_ap@{k u} `{Univalence} (n : trunc_index)
+Definition isconnmap_ap@{k u | k < u} `{Univalence} (n : trunc_index)
            {A B : Type@{k}} (f : A -> B) `{IsConnMap n.+1 _ _ f} {x1 x2 : A}
            : IsConnMap n (@ap _ _ f x1 x2).
 Proof.
@@ -140,17 +139,15 @@ Print Trunc_functor_equiv.
               u0 <= u1
 That's not unreasonable, but here's a variation:  *)
 
-(* Requires i <= k and j <= k. *)
-Definition Trunc_functor_equiv@{i j k} (n : trunc_index)
+Definition Trunc_functor_equiv@{i j k | i <= k, j <= k} (n : trunc_index)
            {X : Type@{i}} {Y : Type@{j}} (f : X <~> Y)
   : Tr@{i} n X <~> Tr@{j} n Y
   := equiv_O_functor@{k i j} (Tr n) f.
 
 (** We can move [IsConnMap (Tr n) f] across universes, since [Tr] is cumulative. *)
-(* i <= j,  as expected *)
 (* Could generalize to  i j k, with i <= j and i <= k. *)
 (* This is essentially the same as [conn_map_O_leq' (Tr@{j} n) (Tr@{i} n)], except that that needs [IsAccRSU (Tr n)], which I couldn't find in the library.  It follows from the results at the end of Spheres.v, but hasn't been filled in.  So we prove this directly.  (The other hypothesis of [conn_map_O_leq'] is found automatically.)  **  Results recently added to misc.v do show that (Tr n) is accessible, so this could be revamped. *)
-Definition lift_isconnmap_trunc@{i j} (n : trunc_index)
+Definition lift_isconnmap_trunc@{i j | i <= j} (n : trunc_index)
            {X Y : Type@{i}} (f : X -> Y)
   : IsConnMap@{i} (Tr@{i} n) f <-> IsConnMap@{j} (Tr@{j} n) f.
 Proof.

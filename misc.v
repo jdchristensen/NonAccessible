@@ -3,8 +3,7 @@
 Require Import HoTT.
 
 (* The universe variables here do not follow our general convention.  We name them nicely here because later we need to provide universe annotations when using this result. *)
-(* i <= u, j <= v, k <= {u,v}. *)
-Definition equiv_postcompose_equiv@{i j k u v} `{Funext}
+Definition equiv_postcompose_equiv@{i j k u v | i <= u, j <= v, k <= u, k <= v} `{Funext}
            {X : Type@{i}} {Y : Type@{j}} (Z : Type@{k}) (e : X <~> Y)
   : Equiv@{u v} (Z <~> X) (Z <~> Y).
 (* This follows from equiv_induction, but we need to control universe variables. This method also avoids Univalence. *)
@@ -26,8 +25,7 @@ Proof.
     apply eissect.
 Defined.
 
-(* i <= u, j <= v, k <= {u,v}. *)
-Definition equiv_precompose_equiv@{i j k u v} `{Funext}
+Definition equiv_precompose_equiv@{i j k u v | i <= u, j <= v, k <= u, k <= v} `{Funext}
            {X : Type@{i}} {Y : Type@{j}} (Z : Type@{k}) (e : X <~> Y)
   : Equiv@{v u} (Y <~> Z) (X <~> Z).
 (* This follows from equiv_induction, but we need to control universe variables. This method also avoids Univalence. *)
@@ -80,7 +78,8 @@ Definition extendable_along_unit (n : nat) (X : Type) (P : Unit -> Type)
   : ExtendableAlong n (fun _ : X => tt) P.
 Proof.
   revert P ea.
-  induction n; intros P ea.
+  (* Using [simple_induction] avoids an extra universe variable. *)
+  simple_induction n n IHn; intros P ea.
   - exact tt.
   - split.
     + intro g.
@@ -108,20 +107,20 @@ Proof.
     apply ea.
 Defined.
 
+(* This has four universe variables, but can accept them being equal.  Can get it down to a single universe variable with some annotations. *)
 Definition istrunc_iff_sphere_oo_null (n : trunc_index) (X : Type)
   : IsTrunc n.+1 X <-> ooExtendableAlong (fun _ : Sphere n.+2 => tt) (unit_name X).
 Proof.
   split.
   - intros isTrX n0; revert X isTrX.
-    induction n0; intros X isTrX.
+    simple_induction n0 n0 IHn0; intros X isTrX.
     + exact tt.
     + split; intros.
       * apply istrunc_iff_sphere_null; assumption.
       * apply extendable_along_unit.
         rapply IHn0.
   - intros ea.
-    apply istrunc_allnullhomot@{k k k k k k k k}; intro f.
+    apply istrunc_allnullhomot; intro f.
     srapply nullhomotopy_factor_through_unit.
     apply (ea 1%nat).
 Defined.
-

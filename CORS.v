@@ -209,8 +209,8 @@ Proof.
 Defined.
     
 (* If the generators of a localization are O-connected for some modality O, then the eta maps are O-connected as well.  This is a special case of CORS, Theorem 3.12, where we assume that the factorization system comes from a modality. *)
-(* j <= k < u. *)
-Definition eta_connected_generators_connected@{j k u} `{Univalence} (O : Modality@{k})
+Definition eta_connected_generators_connected@{j k u | j <= k, k < u} `{Univalence}
+           (O : Modality@{k})
            (f : LocalGenerators@{j}) (C : forall i, IsConnMap@{k} O (f i))
   : forall X : Type@{j}, IsConnMap@{k} O (to (Loc@{j j} f) X).
 Proof.
@@ -256,9 +256,8 @@ Proof.
 Defined.
 
 (** Special case for [n]-truncation. Because [n]-truncation is defined for all universe levels, we can change the hypothesis [C] to use the more natural universe level [j]. *)
-(* j <= k, j < u. *)
-Definition eta_connected_generators_connected_tr@{j k u} `{Univalence} (n : trunc_index)
-           (f : LocalGenerators@{j}) (C : forall i, IsConnMap@{j} n (f i))
+Definition eta_connected_generators_connected_tr@{j k u | j <= k, j < u} `{Univalence}
+           (n : trunc_index) (f : LocalGenerators@{j}) (C : forall i, IsConnMap@{j} n (f i))
   : forall X : Type@{j}, IsConnMap@{k} n (to (Loc@{j j} f) X).
 Proof.
   intro X.

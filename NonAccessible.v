@@ -13,8 +13,8 @@ Require Import misc.
 
 (* If i <= j and [O] is a reflective subuniverse of [Type@{j}] such that when [X] is in [Type@{i}], [O X] is i-small, then [O] restricts to a reflective subuniverse of [Type@{i}]. This is Proposition 3.1 from the draft. *)
 (* This only requires [Funext] because [O] is not assumed to unconditionally land in [HProp]s, so we can't resize the predicate defining the subuniverse unless we have [Funext].  One could also relax the requirement that the predicate lands in the universe [i]. *)
-(* i <= j *)
-Definition restrict_O@{i j} `{PropResizing} `{Funext} (O : ReflectiveSubuniverse@{j})
+Definition restrict_O@{i j | i <= j} `{PropResizing} `{Funext}
+           (O : ReflectiveSubuniverse@{j})
            (sX : forall X : Type@{i}, IsSmall@{i j} (O X))
   : ReflectiveSubuniverse@{i}.
 Proof.
@@ -45,8 +45,8 @@ Proof.
 Defined.
 
 (* This just combines [restrict_O] and [issmall_n_image]. *)
-(* i <= j <= k < u, i < k. *)
-Definition restrict_O'@{i j k u} `{PropResizing} `{Univalence} (n : trunc_index) (O : ReflectiveSubuniverse@{j})
+Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} `{Univalence}
+           (n : trunc_index) (O : ReflectiveSubuniverse@{j})
            (C : forall X : Type@{i}, IsConnMap@{k} n (to O X))
            (L : forall X : Type@{i}, IsLocallySmall@{i j k} (trunc_index_to_nat n) (O X))
   : ReflectiveSubuniverse@{i}.
@@ -76,8 +76,7 @@ Proof.
 Defined.
 
 (* Being local with respect to the extended generating set is equivalent to being n-truncated and local with respect to the original family of maps. This could be generalized as in RSS Thm 3.29. *)
-(* k < u *)
-Definition islocal_extended_generators@{k +} (n : trunc_index)
+Definition islocal_extended_generators@{k} (n : trunc_index)
       {I : Type@{k}} {A B : I -> Type@{k}} (f : forall i, A i -> B i)
       (X : Type@{k})
   : IsLocal (extended_generators n f) X <-> IsLocal (Build_LocalGenerators _ _ _ f) X * IsTrunc n.+1 X.
@@ -87,18 +86,17 @@ Proof.
     split.
     + intro a; cbn.
       exact (isLX (inl a)).
-    + apply (snd (istrunc_iff_sphere_oo_null n X)).
+    + apply (snd (istrunc_iff_sphere_oo_null@{k k k k} n X)).
       rapply (@ooextendable_islocal _ _ _ (inr tt)).
   - intros [isLX isTrX].
     intros [a | b].
     + apply isLX.
     + cbn.
-      apply (fst (istrunc_iff_sphere_oo_null n X)); assumption.
+      apply (fst (istrunc_iff_sphere_oo_null@{k k k k} n X)); assumption.
 Defined.
 
 (* Given any family of n-connected maps in any universe [Type@{j}], one can localize in [Type@{i}] with respect to the extended family. This is Theorem 3.2 from the draft. Note that since localizations exist in all universes, we can remove the constraint that [i <= j]. *)
-(* i < k < u, j <= k. *)
-Definition nonaccessible_localization@{i j k u} `{PropResizing} `{Univalence}
+Definition nonaccessible_localization@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index) {I : Type@{j}}
            {A B : I -> Type@{j}} (f : forall i, A i -> B i) (C : forall i, IsConnMap n (f i))
   : ReflectiveSubuniverse@{i}.
@@ -116,22 +114,11 @@ Proof.
       nrapply isconnected_sn.
   - intro X.  (* All local types are (n+2)-locally small, since S^{n+2} -> Unit is a generator. *)
     apply islocally_small_trunc@{i k k u}.
-    exact (snd (fst (islocal_extended_generators@{k u} n f (O X)) _)).
+    exact (snd (fst (islocal_extended_generators n f (O X)) _)).
 Defined.
 
-(** Tests to ensure that no extra universe constraints are present.  I'm not sure if these are exhaustive. The [+] is to handle the universe holding the iterated product. *)
-Local Definition test_universes@{i j k u +}
-  := let enforce_ij := Type@{i} : Type@{j} in
-    let enforce_jk := Type@{j} : Type@{k} in
-    let enforce_ku := Type@{k} : Type@{u} in
-    (@nonaccessible_localization@{i j k u},
-     @nonaccessible_localization@{j i k u},
-     @nonaccessible_localization@{i j j u},
-     @nonaccessible_localization@{i i k u}).
-
 (* Here we just nail down the fact that the local objects are the n-truncated objects that are local with respect to the original family.  The only difference from [islocal_extended_generators] is that we have to handle the propositional resizing, and we state truncation in the universe [i] containing [X]. *)
-(* i < k < u, j <= k. *)
-Definition in_nonaccessible_localization@{i j k u} `{PropResizing} `{Univalence}
+Definition in_nonaccessible_localization@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index) {I : Type@{j}}
            {A B : I -> Type@{j}} (f : forall i, A i -> B i) (C : forall i, IsConnMap n (f i))
            (X : Type@{i})
@@ -139,7 +126,7 @@ Definition in_nonaccessible_localization@{i j k u} `{PropResizing} `{Univalence}
 Proof.
   (* Get rid of propositional resizing on the LHS: *)
   apply (iff_compose@{u k} (iff_inverse@{u k} (iff_equiv (equiv_resize_hprop _)))).
-  apply (iff_compose@{u k} (islocal_extended_generators@{k u} n f X)).
+  apply (iff_compose@{u k} (islocal_extended_generators n f X)).
   (* Change from [IsTrunc@{i}] to [IsTrunc@{k}]. *)
   rapply iff_functor_prod.
   - split; exact idmap.
@@ -147,8 +134,7 @@ Proof.
 Defined.
 
 (* A special case of [nonaccessible_localization], which reproduces the Casacuberta-Scevenels-Smith result.  Associated to any family of surjective group homomorphisms, there is a localization onto the 1-types which are local with respect to the family. *)
-(* i < k < u, j <= k. *)
-Definition rsu_from_group_surjections@{i j k u} `{PropResizing} `{Univalence}
+Definition rsu_from_group_surjections@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (I : Type@{j}) (A B : I -> Group@{j}) (f : forall i, GroupHomomorphism (A i) (B i))
            (S : forall i, IsSurjection (f i))
   : ReflectiveSubuniverse@{i}.
@@ -161,8 +147,7 @@ Proof.
 Defined.
 
 (* If i <= j and [OFS] is a factorization system on [Type@{j}] such that when [f] is in [Type@{i}], the image is i-small, then [OFS] restricts to a factorization system on [Type@{i}]. *)
-(* i <= j. *)
-Definition restrict_OFS@{i j} `{PropResizing} (OFS : FactorizationSystem@{j j j})
+Definition restrict_OFS@{i j | i <= j} `{PropResizing} (OFS : FactorizationSystem@{j j j})
            (is : forall (X Y : Type@{i}) (f : X -> Y), IsSmall@{i j} (factor OFS f))
   : FactorizationSystem@{i i i}.
 Proof.
@@ -232,3 +217,4 @@ Proof.
     + admit.  (* Right factor is (n+1)-truncated. *)
     + apply islocally_small_in.
 Admitted.
+(* Need to add universe constraints when this is finished. *)
