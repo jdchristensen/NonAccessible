@@ -174,7 +174,7 @@ Fixpoint trunc_index_to_nat (m : trunc_index) : nat
      | m'.+1 => (trunc_index_to_nat m').+1
    end.
 
-(* Under Propositional Resizing, every (n+1)-truncated type is (n+2)-locally small. This is Lemma 2.2 in the draft. *)
+(* Under Propositional Resizing, every (n+1)-truncated type is (n+2)-locally small. This is Lemma 2.3 in the paper. *)
 Definition islocally_small_trunc@{i j k u | i < k, j <= k, k <= u, j < u} `{PropResizing}
            (n : trunc_index) (X : Type@{j}) (T : IsTrunc n.+1 X)
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
@@ -188,13 +188,14 @@ Defined.
 
 (* Rijke's join construction, taken as an axiom. Egbert assumes [Funext] globally, so we assume it here. *)
 (* A more detailed formulation of this is in the HoTT library, but this is all we need (and is equivalent). *)
+(* This has been formalized by Valery Isaev in the Arend Standard Library available at https://github.com/JetBrains/arend-lib.  See the file Homotopy/Image.ard. *)
 Definition jc_surjection@{i j k | i < k, j <= k} `{Funext} (A : Type@{i}) (X : Type@{j})
            (ls : IsLocallySmall@{i j k} 1 X)
            (f : A -> X) (s : IsSurjection@{k} f)
   : IsSmall@{i j} X.
 Admitted.
 
-(* If [f : A -> X] is n-connected, [A] is in [Type@{i}] and [X] is (n+2)-locally small, then [X] is small.  This is Proposition 2.1 from the draft. This could of course be generalized to only requiring that [A] be small. *)
+(* If [f : A -> X] is n-connected, [A] is in [Type@{i}] and [X] is (n+2)-locally small, then [X] is small.  This is Proposition 2.2 from the paper. This could of course be generalized to only requiring that [A] be small. *)
 Definition issmall_n_image@{i j k u | i < k, j <= k, k < u} `{Univalence}
            (n : trunc_index) {A : Type@{i}} {X : Type@{j}}
            (f : A -> X) (C : IsConnMap@{k} n f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) X)
@@ -220,7 +221,7 @@ Proof.
     + apply ls.
 Defined.
 
-(* If [f : X -> Y] is (n+1)-truncated and [Y] is (n+2)-locally small, then [X] is (n+2)-locally small.  This is Lemma 2.3 from the draft. When [n] is -2, it says that a subtype of a small type is small. *)
+(* If [f : X -> Y] is (n+1)-truncated and [Y] is (n+2)-locally small, then [X] is (n+2)-locally small.  This is Lemma 2.4 from the paper. When [n] is -2, it says that a subtype of a small type is small. *)
 Definition islocally_small_truncmap@{i j k u | i < k, j <= k, k <= u, j < u} `{PropResizing}
            (n : trunc_index) {X : Type@{j}} {Y : Type@{j}}
            (f : X -> Y) (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
@@ -233,7 +234,7 @@ Proof.
     apply T.
 Defined.
 
-(* This is Lemma 2.4 from the draft. *)
+(* This is Lemma 2.5 from the paper. *)
 Definition issmall_truncmap_connected@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index)
            {X Y : Type@{j}}
@@ -250,7 +251,7 @@ Proof.
   - by rapply islocally_small_truncmap@{i j k u}.
 Defined.
 
-(* This is Theorem 2.5 from the draft. *)
+(* This is Theorem 2.6 from the paper. *)
 Definition issmall_iff_locally_small_truncated@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index) (X : Type@{j})
   : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} (trunc_index_to_nat n) X * IsSmall@{i j} (Trunc n.+1 X)).
@@ -271,7 +272,7 @@ Proof.
       * exact _.
 Defined.
 
-(* This is Corollary 2.6 from the draft. *)
+(* This is Corollary 2.7 from the paper. *)
 Definition issmall_truncmap_small_truncation@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index)
            {X Y : Type@{j}}

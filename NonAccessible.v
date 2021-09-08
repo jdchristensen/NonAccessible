@@ -11,7 +11,7 @@ Require Import misc.
 
 (* See Smallness.v for a discussion of universe variables. *)
 
-(* If i <= j and [O] is a reflective subuniverse of [Type@{j}] such that when [X] is in [Type@{i}], [O X] is i-small, then [O] restricts to a reflective subuniverse of [Type@{i}]. This is Proposition 3.1 from the draft. *)
+(* If i <= j and [O] is a reflective subuniverse of [Type@{j}] such that when [X] is in [Type@{i}], [O X] is i-small, then [O] restricts to a reflective subuniverse of [Type@{i}]. This is Proposition 3.2 from the paper. *)
 (* This only requires [Funext] because [O] is not assumed to unconditionally land in [HProp]s, so we can't resize the predicate defining the subuniverse unless we have [Funext].  One could also relax the requirement that the predicate lands in the universe [i]. *)
 Definition restrict_O@{i j | i <= j} `{PropResizing} `{Funext}
            (O : ReflectiveSubuniverse@{j})
@@ -95,7 +95,7 @@ Proof.
       apply (fst (istrunc_iff_sphere_oo_null@{k k k k} n X)); assumption.
 Defined.
 
-(* Given any family of n-connected maps in any universe [Type@{j}], one can localize in [Type@{i}] with respect to the extended family. This is Theorem 3.2 from the draft. Note that since localizations exist in all universes, we can remove the constraint that [i <= j]. *)
+(* Given any family of n-connected maps in any universe [Type@{j}], one can localize in [Type@{i}] with respect to the extended family. This is Theorem 3.3 from the paper. Note that since localizations exist in all universes, we can remove the constraint that [i <= j]. *)
 Definition nonaccessible_localization@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index) {I : Type@{j}}
            {A B : I -> Type@{j}} (f : forall i, A i -> B i) (C : forall i, IsConnMap n (f i))
@@ -201,7 +201,7 @@ Definition OFS_from_family@{j} (f : LocalGenerators@{j})
   : FactorizationSystem@{j j j}.
 Admitted.
 
-(* Theorem 3.5 from the draft. The definition of OFS in the library is different from in the paper, so the proof needs to be slightly different.  In the paper, [L] is defined to be the class of maps in [Type@{i}] which are left orthogonal to [R], while here we define [L] to be the restriction of [L'] to [Type@{i}].  It follows that both definitions agree. *)
+(* Theorem 3.6 from the paper. The definition of OFS in the library is different from in the paper, so the proof needs to be slightly different.  In the paper, [L] is defined to be the class of maps in [Type@{i}] which are left orthogonal to [R], while here we define [L] to be the restriction of [L'] to [Type@{i}].  It follows that both definitions agree. *)
 (* Unfortunately, the HoTT library is currently missing too many things for this to be fully formalized.  The notion of maps being orthogonal (the unique lifting property) has not been defined.  We also need that being right orthogonal to [S^{n+1} -> 1] implies being n-truncated (similar to istrunc_allnullhomot), and that being left orthogonal to the maps that are right orthogonal to a class of (n-1)-connected maps means you are (n-1)-connected. *)
 Definition nonaccessible_OFS@{i j u} `{PropResizing} `{Univalence}
            (n : trunc_index) (I : Type@{j})
