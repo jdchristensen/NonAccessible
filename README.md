@@ -1,7 +1,6 @@
-This is a formalization of the results described in the two page HoTT/UF abstract
+This is a formalization of the results described in the paper
 "Non-accessible localizations" available at my [web page](https://jdc.math.uwo.ca/papers.html).
-A link to the talk is also available at that page.
-A full paper is in progress.
+A link to a talk is also available at that page.
 
 Here is a mapping between the results in the paper and the formalization:
 
