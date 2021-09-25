@@ -20,6 +20,18 @@ Record IsSmall@{i j | } (X : Type@{j}) :=
 Arguments smalltype {X} _.
 Arguments equiv_smalltype {X} _.
 
+Definition lift_issmall@{i j k | j <= k}
+           (X : Type@{j})
+           (sX : IsSmall@{i j} X)
+  : IsSmall@{i k} X
+  := Build_IsSmall X (smalltype sX) (equiv_smalltype sX).
+
+Definition lower_issmall@{i j k | j <= k}
+           (X : Type@{j})
+           (sX : IsSmall@{i k} X)
+  : IsSmall@{i j} X
+  := Build_IsSmall X (smalltype sX) (equiv_smalltype sX).
+
 Global Instance ishprop_issmall@{i j k | i < k, j <= k} `{Univalence} (X : Type@{j}) : IsHProp (IsSmall@{i j} X).
 Proof.
   apply hprop_inhabited_contr.
@@ -284,4 +296,23 @@ Proof.
   apply (snd (issmall_iff_locally_small_truncated@{i j k u} n X)).
   refine (_, sTrX).
   rapply islocally_small_truncmap@{i j k u}; assumption.
+Defined.
+
+(* This isn't yet in the paper. It lets us simplify the statement of Proposition 2.8. *)
+Definition issmall_inhabited_issmall@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
+           (X : Type@{j})
+           (isX : X -> IsSmall@{i j} X)
+  : IsSmall@{i j} X.
+Proof.
+  (* Since IsSmall@{i j} lives in a universe larger than [i] and we're not assuming [i <= j], we have to pass through universe [k], which we think of as max(i+1,j). *)
+  apply lower_issmall.
+  (* Now the goal is IsSmall@{i k} X. *)
+  apply (issmall_codomain_fibers_small isX).
+  - rapply issmall_hprop.
+  - intro sX.
+    apply sigma_closed_issmall.
+    1: apply (lift_issmall _ sX).
+    intro x.
+    apply (islocally_small_small 1 (IsSmall X)).
+    rapply issmall_hprop.
 Defined.
