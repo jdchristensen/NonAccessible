@@ -97,6 +97,24 @@ Proof.
   apply issmall_in.
 Defined.
 
+(* This isn't yet in the paper. It lets us simplify the statement of Proposition 2.8. *)
+Definition issmall_inhabited_issmall@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
+           (X : Type@{j})
+           (isX : X -> IsSmall@{i j} X)
+  : IsSmall@{i j} X.
+Proof.
+  (* Since IsSmall@{i j} lives in a universe larger than [i] and we're not assuming [i <= j], we have to pass through universe [k], which we think of as max(i+1,j). *)
+  apply lower_issmall.
+  (* Now the goal is IsSmall@{i k} X. *)
+  apply (issmall_codomain_fibers_small isX).
+  - rapply issmall_hprop.
+  - intro sX.
+    apply sigma_closed_issmall.
+    1: apply (lift_issmall _ sX).
+    intro x.
+    rapply issmall_contr.
+Defined.
+
 (* Locally small types. *)
 
 (* We say that a type [X] is 0-locally small if it is small, and (n+1)-locally small if its identity types are n-small. *)
@@ -296,22 +314,4 @@ Proof.
   apply (snd (issmall_iff_locally_small_truncated@{i j k u} n X)).
   refine (_, sTrX).
   rapply islocally_small_truncmap@{i j k u}; assumption.
-Defined.
-
-(* This isn't yet in the paper. It lets us simplify the statement of Proposition 2.8. *)
-Definition issmall_inhabited_issmall@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
-           (X : Type@{j})
-           (isX : X -> IsSmall@{i j} X)
-  : IsSmall@{i j} X.
-Proof.
-  (* Since IsSmall@{i j} lives in a universe larger than [i] and we're not assuming [i <= j], we have to pass through universe [k], which we think of as max(i+1,j). *)
-  apply lower_issmall.
-  (* Now the goal is IsSmall@{i k} X. *)
-  apply (issmall_codomain_fibers_small isX).
-  - rapply issmall_hprop.
-  - intro sX.
-    apply sigma_closed_issmall.
-    1: apply (lift_issmall _ sX).
-    intro x.
-    rapply issmall_contr.
 Defined.
