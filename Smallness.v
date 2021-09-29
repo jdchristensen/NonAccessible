@@ -313,6 +313,5 @@ Proof.
     apply sigma_closed_issmall.
     1: apply (lift_issmall _ sX).
     intro x.
-    apply (islocally_small_small 1 (IsSmall X)).
-    rapply issmall_hprop.
+    rapply issmall_contr.
 Defined.
