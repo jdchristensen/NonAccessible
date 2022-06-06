@@ -277,7 +277,7 @@ Proof.
   strip_truncations.
   apply (issmall_n_image@{i j k u} n (unit_name x)).
   - apply lift_isconnmap_trunc@{j k}.
-    rapply conn_point_incl@{j j j j j j j j j j j j u}. 
+    rapply conn_point_incl@{j j j j j j j j j j j j j j j u}.
   - by rapply islocally_small_truncmap@{i j k u}.
 Defined.
 

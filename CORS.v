@@ -230,7 +230,7 @@ Proof.
   1: exact _.
   { (* We use [Localize_rec] rather than [O_rec], as this lets us eliminate into [I], which is in a possibly larger universe. *)
     rapply (Localize_rec@{j j k k k k} f l).
-    rapply (inO_domain_mapinO@{k k k j j k j j j j j k k k k k k k k k j} _ _ _ _ r). }
+    rapply (inO_domain_mapinO@{k k k k k k k k k k k k k k k k k k k k k k k k k k k j} _ _ _ _ r). }
   snrefine (let k := (_ : r o l' == idmap) in _).
   { apply O_indpaths. exact h. }
   snrapply (isequiv_adjointify r l' k).
