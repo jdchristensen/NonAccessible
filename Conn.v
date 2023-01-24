@@ -158,12 +158,9 @@ Proof.
   make_equiv.
 Defined.
 
-(* Should this be a Global Instance? *)
+(* Should this be a Global Instance? [mapinO_pr1] is, but isn't found automatically for this goal. *)
 Definition istruncmap_pr1 {n : trunc_index} {A : Type} (B : A -> Type) (T : forall a, IsTrunc n (B a))
   : IsTruncMap n (pr1 : {a : A & B a} -> A).
 Proof.
-  intro a.
-  rapply istrunc_equiv_istrunc.
-  1: apply hfiber_fibration.
-  apply T.
+  apply (mapinO_pr1 (Tr n)).
 Defined.
