@@ -1,4 +1,4 @@
--R /home/jdc/hott/HoTT/theories HoTT
+-R /home/jdc/hott/HoTT-master/theories HoTT
 -R . Top
 -arg -noinit
 -arg -indices-matter
