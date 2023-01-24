@@ -142,7 +142,7 @@ Proof.
   snrapply (nonaccessible_localization@{i j k u} 0).
   4: exact (fun i => fmap pClassifyingSpace (f i)).
   intro i;
-  apply isconn_map_functor_pclassifyingspace@{u j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j};
+  apply isconn_map_functor_pclassifyingspace@{j u j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j};
   apply S.
 Defined.
 
