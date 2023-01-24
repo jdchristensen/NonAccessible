@@ -23,6 +23,10 @@ Definition lifts {A B C D : Type}
            {f : A -> C} {g : B -> D} (S : m o f == g o c)
   := {h : B -> C & { H1 : h o c == f & { H2 : m o h == g & forall a, (ap m (H1 a)) @ (S a) = H2 (c a) } } }.
 
+Definition unique_lifting {A B C D : Type}
+           (c : A -> B) (m : C -> D)
+  := forall (f : A -> C) (g : B -> D) (S : m o f == g o c), Contr (lifts S).
+
 (** First we show that [lift(S)] is equivalent to a certain type of sections. *)
 
 Definition equiv_lifts_sections `{Funext} {A B C D : Type}
@@ -33,7 +37,7 @@ Proof.
   (* We start with two adjustments to the the codomain: *)
   refine (_ oE _).
   1: apply (equiv_functor_sigma_pb (equiv_sig_coind _ _)).
-  cbn.
+  cbn; unfold sig_coind_uncurried.
   equiv_via { h : B -> C & { H2 : m o h == g & forall a, (h (c a); H2 (c a)) = (f a; S a) :> {c0 : C & m c0 = g (c a)}}}.
   2: make_equiv.
   (* We strip off the outer layer: *)
@@ -48,6 +52,7 @@ Proof.
   { nrapply equiv_functor_forall_id.  (* [Funext] is used here. *)
     intro a.
     apply equiv_path_sigma. }
+  cbn.
   refine (equiv_sig_coind _ _ oE _); cbn.
   (* Strip off the outer layer: *)
   snrapply equiv_functor_sigma_id; intro H1; cbn.
@@ -64,9 +69,9 @@ Definition unique_lifting_conn_modal `{Funext} (O : ReflectiveSubuniverse)
            {A B C D : Type}
            (c : A -> B) `{IsConnMap O _ _ c}
            (m : C -> D) `{MapIn O _ _ m}
-           (f : A -> C) (g : B -> D) (S : m o f == g o c)
-  : Contr (lifts S).
+  : unique_lifting c m.
 Proof.
+  intros f g S.
   nrapply contr_equiv'.
   1: symmetry; apply equiv_lifts_sections.
   snrapply (contr_equiv' (hfiber (fun (l : forall b, hfiber m (g b)) => l oD c) (fun a => (f a; S a)))).
