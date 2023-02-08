@@ -150,7 +150,7 @@ Definition islocally_small_equiv_islocally_small@{i j1 j2 k u | i < k, j1 <= k, 
 Proof.
   revert A B e lsA.
   simple_induction n n IHn.
-  - exact @issmall_equiv_issmall@{i j1 j2}.
+  - exact @issmall_equiv_issmall.
   - intros A B e lsA b b'.
     nrapply IHn.
     * exact (equiv_ap' (e^-1%equiv) b b')^-1%equiv.
@@ -183,7 +183,7 @@ Definition islocally_small_codomain_fibers_locally_small@{i j k u | i < k, j <= 
            (sF : forall y : Y, IsLocallySmall@{i j k} n (hfiber f y))
   : IsLocallySmall@{i j k} n X.
 Proof.
-  rapply islocally_small_equiv_islocally_small@{i j j k u}.
+  rapply islocally_small_equiv_islocally_small.
   - exact (equiv_fibration_replacement f)^-1%equiv.
   - apply sigma_closed_islocally_small; assumption.
 Defined.
@@ -193,7 +193,7 @@ Definition islocally_small_small@{i j k u | i < k, j <= k, k <= u, j < u} (n : n
            (X : Type@{j}) (sX : IsSmall@{i j} X)
   : IsLocallySmall@{i j k} n X.
 Proof.
-  apply (islocally_small_equiv_islocally_small@{i i j k u} n (equiv_smalltype sX)).
+  apply (islocally_small_equiv_islocally_small n (equiv_smalltype sX)).
   apply islocally_small_in.
 Defined.
 
@@ -210,7 +210,7 @@ Definition islocally_small_trunc@{i j k u | i < k, j <= k, k <= u, j < u} `{Prop
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
 Proof.
   revert n X T.
-  rapply trunc_index_rect@{u}; cbn.
+  rapply trunc_index_rect; cbn.
   - nrapply issmall_hprop.
   - intros n IHn X T x y.
     rapply IHn.
@@ -257,7 +257,7 @@ Definition islocally_small_truncmap@{i j k u | i < k, j <= k, k <= u, j < u} `{P
            (f : X -> Y) (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
 Proof.
-  apply (islocally_small_codomain_fibers_locally_small@{i j k u} _ f).
+  apply (islocally_small_codomain_fibers_locally_small _ f).
   - exact ls.
   - intro y.
     apply islocally_small_trunc.
@@ -275,7 +275,7 @@ Definition issmall_truncmap_connected@{i j k u | i < k, j <= k, k < u} `{PropRes
 Proof.
   pose proof (x := merely_isconnected n X).
   strip_truncations.
-  apply (issmall_n_image@{i j k u} n (unit_name x)).
+  apply (issmall_n_image n (unit_name x)).
   - apply lift_isconnmap_trunc@{j k}.
     rapply conn_point_incl@{j j j j j j j j j j j j j j j j u}.
   - by rapply islocally_small_truncmap@{i j k u}.
@@ -311,7 +311,7 @@ Definition issmall_truncmap_small_truncation@{i j k u | i < k, j <= k, k < u} `{
            (sTrX : IsSmall@{i j} (Trunc n.+1 X))
   : IsSmall@{i j} X.
 Proof.
-  apply (snd (issmall_iff_locally_small_truncated@{i j k u} n X)).
+  apply (snd (issmall_iff_locally_small_truncated n X)).
   refine (_, sTrX).
   rapply islocally_small_truncmap@{i j k u}; assumption.
 Defined.
