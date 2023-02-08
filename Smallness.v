@@ -104,7 +104,7 @@ Definition issmall_inhabited_issmall@{i j k u | i < k, j <= k, k < u} `{PropResi
   : IsSmall@{i j} X.
 Proof.
   (* Since IsSmall@{i j} lives in a universe larger than [i] and we're not assuming [i <= j], we have to pass through universe [k], which we think of as max(i+1,j). *)
-  apply lower_issmall.
+  apply lower_issmall@{i j k}.
   (* Now the goal is IsSmall@{i k} X. *)
   apply (issmall_codomain_fibers_small isX).
   - rapply issmall_hprop.
@@ -183,7 +183,7 @@ Definition islocally_small_codomain_fibers_locally_small@{i j k u | i < k, j <= 
            (sF : forall y : Y, IsLocallySmall@{i j k} n (hfiber f y))
   : IsLocallySmall@{i j k} n X.
 Proof.
-  nrapply islocally_small_equiv_islocally_small.
+  nrapply islocally_small_equiv_islocally_small@{i j j k u}.
   - exact (equiv_fibration_replacement f)^-1%equiv.
   - apply sigma_closed_islocally_small; assumption.
 Defined.
@@ -193,7 +193,7 @@ Definition islocally_small_small@{i j k u | i < k, j <= k, k <= u, j < u} (n : n
            (X : Type@{j}) (sX : IsSmall@{i j} X)
   : IsLocallySmall@{i j k} n X.
 Proof.
-  apply (islocally_small_equiv_islocally_small n (equiv_smalltype sX)).
+  apply (islocally_small_equiv_islocally_small@{i i j k u} n (equiv_smalltype sX)).
   apply islocally_small_in.
 Defined.
 
@@ -275,7 +275,7 @@ Definition issmall_truncmap_connected@{i j k u | i < k, j <= k, k < u} `{PropRes
 Proof.
   pose proof (x := merely_isconnected n X).
   strip_truncations.
-  apply (issmall_n_image n (unit_name x)).
+  apply (issmall_n_image@{i j k u} n (unit_name x)).
   - apply lift_isconnmap_trunc@{j k}.
     rapply conn_point_incl@{j j j j j j j j j j j j j j j j u}.
   - by rapply islocally_small_truncmap@{i j k u}.
@@ -311,7 +311,7 @@ Definition issmall_truncmap_small_truncation@{i j k u | i < k, j <= k, k < u} `{
            (sTrX : IsSmall@{i j} (Trunc n.+1 X))
   : IsSmall@{i j} X.
 Proof.
-  apply (snd (issmall_iff_locally_small_truncated n X)).
+  apply (snd (issmall_iff_locally_small_truncated@{i j k u} n X)).
   refine (_, sTrX).
   rapply islocally_small_truncmap@{i j k u}; assumption.
 Defined.
