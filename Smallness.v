@@ -20,6 +20,7 @@ Record IsSmall@{i j | } (X : Type@{j}) :=
 Arguments smalltype {X} _.
 Arguments equiv_smalltype {X} _.
 
+(* Note: making [IsSmall] Cumulative makes the following two not necessary, but also means that Coq can't guess universe variables as well in other spots in the file. *)
 Definition lift_issmall@{i j1 j2 | j1 <= j2}
            (X : Type@{j1})
            (sX : IsSmall@{i j1} X)
