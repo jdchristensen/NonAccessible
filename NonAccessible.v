@@ -81,18 +81,20 @@ Definition islocal_extended_generators@{k} (n : trunc_index)
       (X : Type@{k})
   : IsLocal (extended_generators n f) X <-> IsLocal (Build_LocalGenerators _ _ _ f) X * IsTrunc n.+1 X.
 Proof.
+  destruct (istrunc_iff_sphere_oo_null@{k k k k} n X)
+    as [ooext_istrunc istrunc_ooext].
   split.
   - intro isLX.
     split.
     + intro a; cbn.
       exact (isLX (inl a)).
-    + apply (snd (istrunc_iff_sphere_oo_null@{k k k k} n X)).
+    + apply istrunc_ooext.
       rapply (@ooextendable_islocal _ _ _ (inr tt)).
   - intros [isLX isTrX].
     intros [a | b].
     + apply isLX.
     + cbn.
-      apply (fst (istrunc_iff_sphere_oo_null@{k k k k} n X)); assumption.
+      apply ooext_istrunc; assumption.
 Defined.
 
 (* Given any family of n-connected maps in any universe [Type@{j}], one can localize in [Type@{i}] with respect to the extended family. This is Theorem 3.3 from the paper. Note that since localizations exist in all universes, we can remove the constraint that [i <= j]. *)
