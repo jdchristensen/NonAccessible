@@ -20,16 +20,16 @@ Record IsSmall@{i j | } (X : Type@{j}) :=
 Arguments smalltype {X} _.
 Arguments equiv_smalltype {X} _.
 
-Definition lift_issmall@{i j k | j <= k}
-           (X : Type@{j})
-           (sX : IsSmall@{i j} X)
-  : IsSmall@{i k} X
+Definition lift_issmall@{i j1 j2 | j1 <= j2}
+           (X : Type@{j1})
+           (sX : IsSmall@{i j1} X)
+  : IsSmall@{i j2} X
   := Build_IsSmall X (smalltype sX) (equiv_smalltype sX).
 
-Definition lower_issmall@{i j k | j <= k}
-           (X : Type@{j})
-           (sX : IsSmall@{i k} X)
-  : IsSmall@{i j} X
+Definition lower_issmall@{i j1 j2 | j1 <= j2}
+           (X : Type@{j1})
+           (sX : IsSmall@{i j2} X)
+  : IsSmall@{i j1} X
   := Build_IsSmall X (smalltype sX) (equiv_smalltype sX).
 
 Global Instance ishprop_issmall@{i j k | i < k, j <= k} `{Univalence} (X : Type@{j}) : IsHProp (IsSmall@{i j} X).
