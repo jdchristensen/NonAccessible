@@ -37,12 +37,12 @@ Proof.
   apply hprop_inhabited_contr.
   intros [Z e].
   (* [IsSmall X] is equivalent to [IsSmall Z], which is contractible since it is a based path space. *)
-  rapply (istrunc_equiv_istrunc@{k k} { Y : Type@{i} & Y <~> Z } _).
-  - refine (_ oE _).
-    1: issig.
+  rapply (istrunc_equiv_istrunc { Y : Type@{i} & Y <~> Z } _).
+  - equiv_via (sig@{k k} (fun Y : Type@{i} => Y <~> X)).
+    2: issig.
     apply equiv_functor_sigma_id.
     intro Y.
-    exact (equiv_postcompose_equiv@{i j i k k} Y e).
+    exact (equiv_postcompose_equiv Y e).
 Defined.
 
 (* A type in [Type@{i}] is clearly small.  Make this a Global Instance? *)
@@ -277,7 +277,7 @@ Proof.
   strip_truncations.
   apply (issmall_n_image@{i j k u} n (unit_name x)).
   - apply lift_isconnmap_trunc@{j k}.
-    rapply conn_point_incl@{j j j j j j j j j j j j j j j u}.
+    rapply conn_point_incl@{j j j j j j j j j j j j j j j j u}.
   - by rapply islocally_small_truncmap@{i j k u}.
 Defined.
 

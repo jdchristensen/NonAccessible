@@ -1,6 +1,7 @@
 (* Various results about connectivity that will be put into the appropriate place in the HoTT library. *)
 
 Require Import HoTT.
+Require Import Truncations.  (* To get the correct [isconnected_paths] in scope. *)
 
 Require Import misc.
 
@@ -126,7 +127,7 @@ Definition isconnmap_ap@{k u | k < u} `{Univalence} (n : trunc_index)
 Proof.
   intro p.
   apply (isconnected_equiv _ _ (hfiber_ap p)^-1%equiv).
-  apply isconnected_paths@{k k k k k k k k u}.
+  apply isconnected_paths.
 Defined.
 
 (** We are going to show that we can move [IsConnMap (Tr n) f] across universes. First we adjust an existing result. *)

@@ -109,7 +109,7 @@ Proof.
     intros [i | u].
     + cbn. apply lift_isconnmap_trunc@{j k}. apply C. 
     + cbn.
-      apply conn_map_to_unit_isconnected@{k k k k}.
+      apply conn_map_to_unit_isconnected@{k k k k k}.
       apply isconnected_pred.
       nrapply isconnected_sn.
   - intro X.  (* All local types are (n+2)-locally small, since S^{n+2} -> Unit is a generator. *)
@@ -142,7 +142,7 @@ Proof.
   snrapply (nonaccessible_localization@{i j k u} 0).
   4: exact (fun i => fmap pClassifyingSpace (f i)).
   intro i;
-  apply isconn_map_functor_pclassifyingspace@{j u j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j j};
+  apply isconn_map_functor_pclassifyingspace@{j u j j j j j};
   apply S.
 Defined.
 
