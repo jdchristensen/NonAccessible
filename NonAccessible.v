@@ -51,7 +51,7 @@ Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} 
            (L : forall X : Type@{i}, IsLocallySmall@{i j k} (trunc_index_to_nat n) (O X))
   : ReflectiveSubuniverse@{i}.
 Proof.
-  srapply (restrict_O O).
+  snrapply (restrict_O O).
   intro X.
   rapply issmall_n_image@{i j k u}.
   apply L.
@@ -130,7 +130,7 @@ Proof.
   apply (iff_compose@{u k} (iff_inverse@{u k} (iff_equiv (equiv_resize_hprop _)))).
   apply (iff_compose@{u k} (islocal_extended_generators n f X)).
   (* Change from [IsTrunc@{i}] to [IsTrunc@{k}]. *)
-  rapply iff_functor_prod.
+  nrapply iff_functor_prod.
   - split; exact idmap.
   - split; exact (@istrunc_equiv_istrunc _ _ equiv_idmap _).
 Defined.

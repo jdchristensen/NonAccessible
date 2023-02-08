@@ -76,7 +76,7 @@ Definition issmall_codomain_fibers_small@{i j | } {X Y : Type@{j}}
            (sF : forall y : Y, IsSmall@{i j} (hfiber f y))
   : IsSmall@{i j} X.
 Proof.
-  rapply issmall_equiv_issmall.
+  nrapply issmall_equiv_issmall.
   - exact (equiv_fibration_replacement f)^-1%equiv.
   - apply sigma_closed_issmall; assumption.
 Defined.
@@ -183,7 +183,7 @@ Definition islocally_small_codomain_fibers_locally_small@{i j k u | i < k, j <= 
            (sF : forall y : Y, IsLocallySmall@{i j k} n (hfiber f y))
   : IsLocallySmall@{i j k} n X.
 Proof.
-  rapply islocally_small_equiv_islocally_small.
+  nrapply islocally_small_equiv_islocally_small.
   - exact (equiv_fibration_replacement f)^-1%equiv.
   - apply sigma_closed_islocally_small; assumption.
 Defined.
@@ -210,7 +210,7 @@ Definition islocally_small_trunc@{i j k u | i < k, j <= k, k <= u, j < u} `{Prop
   : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
 Proof.
   revert n X T.
-  rapply trunc_index_rect; cbn.
+  nrapply trunc_index_rect; cbn.
   - nrapply issmall_hprop.
   - intros n IHn X T x y.
     rapply IHn.
@@ -232,7 +232,7 @@ Definition issmall_n_image@{i j k u | i < k, j <= k, k < u} `{Univalence}
   : IsSmall@{i j} X.
 Proof.
   revert n A X f C ls.
-  rapply trunc_index_rect@{u}.
+  nrapply trunc_index_rect@{u}.
   - intros A X f C ls.  exact ls.
   - intros n IHn A X f C ls.
     assert (IsConnMap (Tr (-1)) f) as C' by rapply minus_one_connmap_isconnmap.
