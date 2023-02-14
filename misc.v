@@ -11,16 +11,12 @@ Proof.
   snrapply equiv_adjointify.
   - exact (fun f => e oE f).
   - exact (fun g => e^-1 oE g).
-  - simpl.
-    intro g.
-    apply path_equiv@{k j v}.
-    simpl.
+  - intro g.
+    apply path_equiv@{k j v}; cbn.
     funext z.
     apply eisretr.
-  - simpl.
-    intro f.
-    apply path_equiv@{k i u}.
-    simpl.
+  - intro f.
+    apply path_equiv@{k i u}; cbn.
     funext z.
     apply eissect.
 Defined.
@@ -33,15 +29,13 @@ Proof.
   snrapply equiv_adjointify.
   - exact (fun g => g oE e).
   - exact (fun f => f oE e^-1).
-  - simpl.
-    intro f.
-    apply path_equiv@{i k u}.
+  - intro f.
+    apply path_equiv@{i k u}; cbn.
     funext x.
     apply (ap f).
     apply eissect.
-  - simpl.
-    intro g.
-    apply path_equiv@{j k v}.
+  - intro g.
+    apply path_equiv@{j k v}; cbn.
     funext y.
     apply (ap g).
     apply eisretr.
