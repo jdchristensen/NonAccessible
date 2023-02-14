@@ -6,6 +6,8 @@ Require Import HoTT.
 Require Import Conn.
 Require Import misc.
 
+Open Scope trunc_scope.
+
 (* Universe variables:  we most often use a subset of [i j k u].  We think of [Type@{i}] as containing the "small" types and [Type@{j}] the "large" types.  In some early results, there are no constraints between [i] and [j], and in others we require that [i <= j], as expected.  While the case [i = j] isn't particularly interesting, we put some effort into ensuring that it is permitted as well, as there is no semantic reason to exclude it.  The universe variable [k] should be thought of as max(i+1,j), and it is generally required to satisfy [i < k] and [j <= k].  If we assume that [i < j], then we can take [k = j], but we include [k] so that we also allow the case [i = j].  The universe variable [u] is only present because we occasionally use Univalence in [Type@{k}], so the equality types need a larger universe to live in.  Because of this, most results require [k < u].
 
 Summary of the most common situation:  [i < k < u, j <= k], where [i] is for the small types, [j] is for the large types, [k = max(i+1,j)] and [u] is an ambient universe for Univalence.
@@ -119,6 +121,7 @@ Defined.
 (* Locally small types. *)
 
 (* We say that a type [X] is 0-locally small if it is small, and (n+1)-locally small if its identity types are n-small. *)
+(* TODO: Can I make this an inductive type and avoid the extra universe variable [k]? *)
 Fixpoint IsLocallySmall@{i j k | i < k, j <= k} (n : nat) (X : Type@{j}) : Type@{k}
   := match n with
     | 0%nat => IsSmall@{i j} X
@@ -217,14 +220,57 @@ Proof.
     rapply IHn.
 Defined.
 
-(* Rijke's join construction, taken as an axiom. Egbert assumes [Funext] globally, so we assume it here. *)
-(* A more detailed formulation of this is in the HoTT library, but this is all we need (and is equivalent). *)
-(* This has been formalized by Valery Isaev in the Arend Standard Library available at https://github.com/JetBrains/arend-lib.  See the file Homotopy/Image.ard. *)
-Definition jc_surjection@{i j k | i < k, j <= k} `{Funext} (A : Type@{i}) (X : Type@{j})
+(* Rijke's join construction, taken as an axiom. Egbert assumes [Funext] globally, so we assume it here. Not 100% sure that is needed. This has been formalized by Valery Isaev in the Arend Standard Library available at https://github.com/JetBrains/arend-lib.  See the file Homotopy/Image.ard. *)
+(** TODO: delete the version in Modalities.Truncated when I merge this.  My version uses my set-up, to avoid assuming that i < j. *)
+(** TODO: Actually prove this, and put it somewhere more appropriate. *)
+Section JoinConstruction.
+  Universes i j k.
+  Context `{Funext} {X : Type@{i}} {Y : Type@{j}} (f : X -> Y)
+          (ls : IsLocallySmall@{i j k} 1 Y).
+  Definition jc_image@{} : Type@{i}. Admitted.
+  Definition jc_factor1@{} : X -> jc_image. Admitted.
+  Definition jc_factor2@{} : jc_image -> Y. Admitted.
+  Definition jc_factors@{} : jc_factor2 o jc_factor1 == f. Admitted.
+  Global Instance jc_factor1_issurj@{} : IsSurjection jc_factor1. Admitted.
+  Global Instance jc_factor2_isemb : IsEmbedding jc_factor2. Admitted.
+End JoinConstruction.
+
+(** If [X] is locally small and has a surjection from a small type, then it is small. *)
+Definition jc_surjection@{i j k | i < k, j <= k} `{Funext} {A : Type@{i}} {X : Type@{j}}
            (ls : IsLocallySmall@{i j k} 1 X)
            (f : A -> X) (s : IsSurjection@{k} f)
   : IsSmall@{i j} X.
-Admitted.
+Proof.
+  exists (jc_image f ls).
+  snrapply Build_Equiv.
+  1: apply jc_factor2.
+  apply isequiv_surj_emb.
+  - nrapply (cancelR_issurjection (jc_factor1 f ls)).
+    exact (conn_map_homotopic@{k i j k} _ _ _
+            (symmetric_pointwise_paths@{k i j} _ _ _ _ (jc_factors f ls)) s).
+  - apply jc_factor2_isemb.
+Defined.
+
+(** It follows that if [X] is pointed, connected and locally small, then it is small. *)
+Definition small_pointed_connected_locally_small@{i j k u | i < k, j <= k, k < u} `{Univalence}
+  (X : pType@{j}) `{IsConnected 0 X} (ls : IsLocallySmall@{i j k} 1 X)
+  : IsSmall@{i j} X.
+Proof.
+  apply (jc_surjection ls (unit_name pt)).
+  apply conn_point_incl@{k k k k k k k k k k k k k k k k u}; assumption.
+Defined.
+
+(** If a pointed, connected type has a small loop space, then it is small. *)
+Definition small_loops_small@{i j k u| i < k, j <= k, k < u} `{Univalence}
+  {B : pType@{j}} `{IsConnected 0 B} (islB : IsSmall@{i j} (loops B))
+  : IsSmall@{i j} B.
+Proof.
+  rapply small_pointed_connected_locally_small@{i j k u}.
+  intros b0.
+  nrapply (conn_point_elim@{k u} (-1)); [assumption | exact _ |].
+  revert b0; nrapply (conn_point_elim@{k u} (-1)); [assumption | exact _ |].
+  exact islB.
+Defined.
 
 (* If [f : A -> X] is n-connected, [A] is in [Type@{i}] and [X] is (n+2)-locally small, then [X] is small.  This is Proposition 2.2 from the paper. This could of course be generalized to only requiring that [A] be small. *)
 Definition issmall_n_image@{i j k u | i < k, j <= k, k < u} `{Univalence}
@@ -237,7 +283,7 @@ Proof.
   - intros A X f C ls.  exact ls.
   - intros n IHn A X f C ls.
     assert (IsConnMap (Tr (-1)) f) as C' by rapply minus_one_connmap_isconnmap.
-    snrefine (jc_surjection A X _ f C').
+    snrefine (jc_surjection _ f C').
     (* [f] is surjective and [IsSmall] is an [HProp], so we can assume that [x] and [y] are in the image of [f]. *)
     (* We speed up typeclass inference by providing this: *)
     pose proof (fun x y : X => ishprop_issmall (x = y)) as HP.
