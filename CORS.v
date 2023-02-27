@@ -222,24 +222,24 @@ Proof.
   intro X.
   set (eta := to (Loc f) X).
   (** To prove that [eta] is [O]-connected, we factor it as [r o l], where [l] is [O]-connected by definition, and where [r] can be shown to be an equivalence. *)
-  pose (fact := image@{k j j j j j j j j} O eta).
+  pose (fact := image@{k j j j j} O eta).
   set (factsave := fact).
   destruct fact as [I l r h lOconn rinO].
   snrapply (conn_map_homotopic O (r o l) eta h).
   snrapply conn_map_compose.
   1: exact lOconn.
-  snrapply conn_map_isequiv@{k k j j j}.
+  snrapply conn_map_isequiv.
   (** We prove some of isequiv_adjointify here, as [k] gets used in two branches. *)
   (** This is a "no typeclasses" form of [transparent assert], which is faster here: *)
   snrefine (let l' := (_ : O_reflector (Loc f) X -> I) in _).
   1: exact _.
   { (* We use [Localize_rec] rather than [O_rec], as this lets us eliminate into [I], which is in a possibly larger universe. *)
     rapply (Localize_rec@{j j k k k k} f l).
-    rapply (inO_domain_mapinO@{k k k k k k k k k k k k k k k k k k k k k k k k k k k k j} _ _ _ _ r). }
+    rapply (inO_domain_mapinO@{k k k k k k k k k k k k k k k k k k k k k k k k k k k j} _ _ _ _ r). }
   snrefine (let k := (_ : r o l' == idmap) in _).
   { apply O_indpaths. exact h. }
   snrapply (isequiv_adjointify r l' k).
-  snrapply (homotopic_filler_idmap@{k k u u u} (O_factsys@{k k k k k k k k k} O) eta factsave); cbn.
+  snrapply (homotopic_filler_idmap@{k k u u u} (O_factsys O) eta factsave); cbn.
   - intro x.
     exact (ap l' (h x)).
   - intro i; exact (k (r i))^.

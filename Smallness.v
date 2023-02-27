@@ -257,7 +257,7 @@ Definition small_pointed_connected_locally_small@{i j k u | i < k, j <= k, k < u
   : IsSmall@{i j} X.
 Proof.
   apply (jc_surjection ls (unit_name pt)).
-  apply conn_point_incl@{k k k k k k k k k k k k k k k k u}; assumption.
+  apply conn_point_incl@{k u}; assumption.
 Defined.
 
 (** If a pointed, connected type has a small loop space, then it is small. *)
@@ -324,7 +324,7 @@ Proof.
   strip_truncations.
   apply (issmall_n_image@{i j k u} n (unit_name x)).
   - apply lift_isconnmap_trunc@{j k}.
-    rapply conn_point_incl@{j j j j j j j j j j j j j j j j u}.
+    rapply conn_point_incl@{j u}.
   - by rapply islocally_small_truncmap@{i j k u}.
 Defined.
 

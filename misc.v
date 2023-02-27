@@ -96,7 +96,7 @@ Proof.
     apply factor_through_unit_nullhomotopy.
     apply allnullhomot_trunc.
   - intros ea.
-    apply istrunc_allnullhomot@{k k k k k k k k}; intro f.
+    apply istrunc_allnullhomot@{k k k k}; intro f.
     srapply nullhomotopy_factor_through_unit.
     apply ea.
 Defined.
