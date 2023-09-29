@@ -16,6 +16,11 @@ Theorem 3.3:      NonAccessible.nonaccessible_localization
 ```
 
 You will likely need to edit the _CoqProject file to make this build on your system.
-Also, the universe variables are sensitive to the library version (and maybe the Coq version).
-The current version, commit 1b8e486b from February 26, 2023, builds with Coq 8.16.1 and Coq-HoTT library version 8d1c6a7e from February 26, 2023.
-Commit 33ee3baf from June 6, 2022 builds with Coq 8.15.1 and Coq-HoTT library version bca7ccfa from May 23, 2022.
+
+Also, the universe variables are sensitive to the library version (and maybe the Coq version):
+
+- The current version, commit 9943c0a2 from September 29, 2023, builds with Coq 8.18.0 and Coq-HoTT library version a3bde181 from September 27, 2023.
+
+- Commit 1b8e486b from February 26, 2023, builds with Coq 8.16.1 and Coq-HoTT library version 8d1c6a7e from February 26, 2023.
+
+- Commit 33ee3baf from June 6, 2022 builds with Coq 8.15.1 and Coq-HoTT library version bca7ccfa from May 23, 2022.

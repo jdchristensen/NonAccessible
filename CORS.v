@@ -239,7 +239,7 @@ Proof.
   snrefine (let k := (_ : r o l' == idmap) in _).
   { apply O_indpaths. exact h. }
   snrapply (isequiv_adjointify r l' k).
-  snrapply (homotopic_filler_idmap@{k k u u u} (O_factsys O) eta factsave); cbn.
+  snrapply (homotopic_filler_idmap (O_factsys O) eta factsave); cbn.
   - intro x.
     exact (ap l' (h x)).
   - intro i; exact (k (r i))^.
