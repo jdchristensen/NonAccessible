@@ -28,7 +28,6 @@ Definition unique_lifting {A B C D : Type}
   := forall (f : A -> C) (g : B -> D) (S : m o f == g o c), Contr (lifts S).
 
 (** First we show that [lift(S)] is equivalent to a certain type of sections. *)
-
 Definition equiv_lifts_sections `{Funext} {A B C D : Type}
            {c : A -> B} {m : C -> D}
            {f : A -> C} {g : B -> D} (S : m o f == g o c)
@@ -64,6 +63,178 @@ Proof.
   apply equiv_moveL_Vp.
 Defined.
 
+(* We will also describe the type of lifts as the fiber of the following comparison map from [B -> C] to the pullback of [(A -> C) -> (A -> D) <- (B -> D)].  To reduce the use of Funext, the last component of the pullback uses homotopies instead of equalities. *)
+Definition lift_comparison_map {A B C D : Type}
+           (c : A -> B) (m : C -> D)
+  : (B -> C) -> { f : A -> C & { g : B -> D & m o f == g o c }}
+  := fun h => (h o c; m o h; fun _ => idpath).
+(*
+  : (B -> C) -> (Pullback (fun f : A -> C => m o f) (fun g : B -> D => g o c))
+  := fun h => (h o c; m o h; idpath).
+*)
+
+(* Some lemmas about transports that arise below. Maybe they can be stated in better generality? *)
+Lemma transport_homotopy_l {A C D : Type}
+      (m : C -> D) (k : A -> D)
+      (f1 f2 : A -> C) (K : f1 = f2) (H : m o f1 == k) (a : A)
+  : transport (fun f : A -> C => m o f == k) K H a = ap m (ap10 K a)^ @ H a.
+Proof.
+  destruct K; cbn.
+  exact (concat_1p _)^.
+Defined.
+
+Lemma transport_homotopy_l_path_forall `{H' : Funext} {A C D : Type}
+      (m : C -> D) (k : A -> D)
+      (f1 f2 : A -> C) (K : f1 == f2) (H : m o f1 == k)
+  : transport (fun f : A -> C => m o f == k) (path_forall f1 f2 K) H = (fun a => ap m (K a)^ @ H a).
+Proof.
+  funext a.
+  refine (transport_homotopy_l m k f1 f2 _ H a @ _).
+  apply whiskerR.
+  apply (ap (ap m)).
+  apply inverse2.
+  rapply apD10_path_forall.
+Defined.
+
+Lemma transport_homotopy_r {A B D : Type}
+      (c : A -> B) (k : A -> D)
+      (g1 g2 : B -> D) (K : g1 = g2) (H : k == g1 o c) (a : A)
+  : transport (fun g : B -> D => k == g o c) K H a = H a @ ap10 K (c a).
+Proof.
+  destruct K; cbn.
+  exact (concat_p1 _)^.
+Defined.
+
+Lemma transport_homotopy_r_path_forall `{H' : Funext} {A B D : Type}
+      (c : A -> B) (k : A -> D)
+      (g1 g2 : B -> D) (K : g1 == g2) (H : k == g1 o c)
+  : transport (fun g : B -> D => k == g o c) (path_forall g1 g2 K) H = (fun a => H a @ K (c a)).
+Proof.
+  funext a.
+  refine (transport_homotopy_r c k g1 g2 _ H a @ _).
+  apply whiskerL.
+  rapply apD10_path_forall.
+Defined.
+
+Lemma transport_homotopy_r' {A B D : Type}
+      (c : A -> B) (k : A -> D)
+      (g1 g2 : B -> D) (K : g1 = g2) (H : g1 o c == k) (a : A)
+  : transport (fun g : B -> D => g o c == k) K H a = (ap10 K (c a))^ @ H a.
+Proof.
+  induction K; cbn.
+  symmetry; apply concat_1p.
+Defined.
+
+Lemma transport_homotopy_r'_path_forall `{H' : Funext} {A B D : Type}
+      (c : A -> B) (k : A -> D)
+      (g1 g2 : B -> D) (K : g1 == g2) (H : g1 o c == k)
+  : transport (fun g : B -> D => g o c == k) (path_forall g1 g2 K) H = (fun a => (K (c a))^ @ H a).
+Proof.
+  funext a.
+  refine (transport_homotopy_r' c k g1 g2 _ H a @ _).
+  apply whiskerR.
+  apply inverse2.
+  rapply apD10_path_forall.
+Defined.
+
+(* The type of lifts is the fiber over the point [(f; g; S)] in the pullback. *)
+Definition equiv_lifts_fiber `{Funext} {A B C D : Type}
+           {c : A -> B} {m : C -> D}
+           {f : A -> C} {g : B -> D} (S : m o f == g o c)
+  : lifts S <~> hfiber (lift_comparison_map c m) (f; (g; S)).
+Proof.
+  unfold lifts, hfiber, lift_comparison_map.
+  nrapply equiv_functor_sigma_id; intro h.
+  refine (equiv_path_sigma _ _ _ oE _); cbn.
+  snrapply equiv_functor_sigma'.
+  1: apply equiv_path_forall.
+  intro H1; cbn.
+  rewrite transport_sigma'; cbn.  (* Rewrites could be removed... *)
+  rewrite (transport_homotopy_l_path_forall m _ _ f H1 _).
+  refine (equiv_path_sigma _ _ _ oE _); cbn.
+  snrapply equiv_functor_sigma'.
+  1: apply equiv_path_forall.
+  intro H2; cbn.
+  rewrite (transport_homotopy_r_path_forall c _ _ g H2 _).
+  refine (equiv_path_forall _ _ oE _).
+  snrapply equiv_functor_forall_id; intro a; cbn.
+  refine (equiv_path_inverse _ _ oE _).
+  rewrite concat_p1.
+  rewrite ap_V.
+  apply equiv_moveL_Vp.
+Defined.
+
+(* Therefore, [c] has unique lifting against [m] iff [lift_comparison_map] is an equivalence. *)
+Definition unique_lifting_iff_isequiv_lift_comparison `{Funext} {A B C D : Type}
+           (c : A -> B) (m : C -> D)
+  : unique_lifting c m <~> IsEquiv (lift_comparison_map c m).
+Proof.
+  (* The lift comparison map is an equivalence iff its fibers are contractible. *)
+  refine (equiv_contr_map_isequiv _ oE _).
+  unfold unique_lifting, IsTruncMap.
+  (* We split apart the Sigma type in the codomain. *)
+  refine (equiv_sig_ind _ oE _).
+  snrapply equiv_functor_forall_id; intro f; cbn.
+  refine (equiv_sig_ind _ oE _).
+  snrapply equiv_functor_forall_id; intro g; cbn.
+  snrapply equiv_functor_forall_id; intro S; cbn.
+  nrapply (equiv_inO_equiv (Tr (-2))).
+  apply equiv_lifts_fiber.
+Defined.
+
+Lemma equiv_isequiv_compose_Ef_f `{Funext} {A B C : Type}
+      (f : A -> B) (g : A -> C) (e : B -> C) `{ee : IsEquiv _ _ e}
+      (K : e o f == g)
+  : IsEquiv f <~> IsEquiv g.
+Proof.
+  apply equiv_iff_hprop.
+  - intro fe.
+    snrapply (isequiv_homotopic _ K).
+    apply isequiv_compose.
+  - intro ge.
+    nrapply cancelL_isequiv.
+    1: exact ee.
+    apply (isequiv_homotopic _ (symmetric_pointwise_paths _ _ _ _ K)).
+Defined.
+
+Lemma equiv_isequiv_compose_f_Ef `{Funext} {A B C : Type} (f : A -> C) (g : A -> B) (e : B -> C) `{ee : IsEquiv _ _ e}
+      (K : f == e o g)
+  : IsEquiv f <~> IsEquiv g.
+Proof.
+  symmetry; rapply (equiv_isequiv_compose_Ef_f _ _ e).
+  symmetry; exact K.
+Defined.
+
+(* A special case of [path_sigma'] that avoids transport. *)
+Definition path_sigma'_1 {A : Type} (P : A -> Type) {x : A} {y y' : P x}
+           (q : y = y')
+: (x;y) = (x;y')
+  := path_sigma' P 1 q.
+
+(* Put another way, [c] has unique lifting against [m] iff that square of function types is a pullback.  The only content here is handling the fact that we used a homotopy instead of an equality in the codomain of [lift_comparison_map]. *)
+Definition unique_lifting_iff_ispullback `{Funext} {A B C D}
+       (c : A -> B) (m : C -> D)
+  : unique_lifting c m <~> IsPullback (f:=fun h:B->C => h o c) (g:=fun g:B->D => g o c)
+                                    (h:=fun h:B->C => m o h) (k:=fun f:A->C => m o f)
+                                    (fun _ => idpath).
+Proof.
+  refine (_ oE unique_lifting_iff_isequiv_lift_comparison c m).
+  unfold IsPullback.
+  unfold pullback_corec, lift_comparison_map.
+  snrapply equiv_isequiv_compose_f_Ef.
+  - unfold Pullback.
+    apply equiv_functor_sigma_id; intro f.
+    apply equiv_functor_sigma_id; intro g.
+    apply equiv_apD10.
+  - exact _.
+  - cbn.
+    intro h.
+    unfold functor_sigma.
+    cbn.
+    apply path_sigma'_1.
+    reflexivity.
+Defined.
+
 (** This is the unique lifting property for connected and modal maps, which holds even though they don't necessarily form an OFS. *)
 Definition unique_lifting_conn_modal `{Funext} (O : ReflectiveSubuniverse)
            {A B C D : Type}
@@ -83,6 +254,18 @@ Proof.
   snrapply equiv_functor_sigma_id; intro l; cbn.
   symmetry.
   apply equiv_path_forall.
+Defined.
+
+(* It follows that in this case the square of function types is a pullback. *)
+Definition ispullback_conn_modal `{Funext} {A B C D} (O : ReflectiveSubuniverse)
+       (c : A -> B) `{IsConnMap O _ _ c}
+       (m : C -> D) `{MapIn O _ _ m}
+  : IsPullback (f:=fun h:B->C => h o c) (g:=fun g:B->D => g o c)
+               (h:=fun h:B->C => m o h) (k:=fun f:A->C => m o f)
+               (fun _ => idpath).
+Proof.
+  apply unique_lifting_iff_ispullback.
+  rapply unique_lifting_conn_modal.
 Defined.
 
 (** If a type has unique extensions against the generators, it is local.  This is probably just repeating things to do with ooExtendableAlong... *)
@@ -132,16 +315,6 @@ Proof.
   - reflexivity.
 Defined.
 
-(** A specific lemma about transporting homotopies that comes up below. *)
-Lemma transport_homotopy {A B C : Type}
-      (f : A -> B) (g h : B -> C) (k : A -> C)
-      (K : g = h) (H : g o f == k) (a : A)
-  : transport (fun w : B -> C => w o f == k) K H a = (ap10 K (f a))^ @ H a.
-Proof.
-  induction K; cbn.
-  symmetry; apply concat_1p.
-Defined.
-
 (** Special case of the CORS result mentioned above, Lemma 3.11, for the connected/modal maps for a modality [O]. In fact, it works for any reflective subuniverse [O], even though the connected and modal maps don't form an OFS. *)
 (** It might be possible to remove Funext. *)
 Definition inO_domain_mapinO `{Funext} (O : ReflectiveSubuniverse)
@@ -184,7 +357,7 @@ Proof.
     intro a.
     change (ap r (H1 a)) with (S' a).
     refine (_ @@ 1 @ _).
-    1: exact ((apD10 contr2 a)^ @ transport_homotopy (f i) k (r o g) (r o h) contr1 Sr a).
+    1: exact ((apD10 contr2 a)^ @ transport_homotopy_r' (f i) (r o h) k (r o g) contr1 Sr a).
     apply concat_pp_V.
 Defined.
 
