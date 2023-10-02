@@ -7,6 +7,7 @@ Definition equiv_postcompose_equiv@{i j k u v | i <= u, j <= v, k <= u, k <= v} 
            {X : Type@{i}} {Y : Type@{j}} (Z : Type@{k}) (e : X <~> Y)
   : Equiv@{u v} (Z <~> X) (Z <~> Y).
 (* This follows from equiv_induction, but we need to control universe variables. This method also avoids Univalence. *)
+(* This also follows from [equiv_postcompose_core_cat_equiv], using [hasmorext_core_type], but that also requires larger universe variables. *)
 Proof.
   snrapply equiv_adjointify.
   - exact (fun f => e oE f).

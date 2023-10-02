@@ -49,7 +49,7 @@ Proof.
       apply inclass2.
 Defined.
 
-(* u u0 u1 u2 u3 |= u0 <= u < {u1,u2} <= u3.  E.g. i i j j j. *)
+(* u u0 u1 |= u0 <= u < u1.  E.g. i i j.  (With Coq <= 8.17, had two more universes.) *)
 Definition homotopic_filler_idmap `{Univalence} (F : FactorizationSystem)
            {X Y : Type} (f : X -> Y)
            (fact : Factorization (@class1 F) (@class2 F) f)
