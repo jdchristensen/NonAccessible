@@ -1,4 +1,6 @@
--R /home/jdc/hott/HoTT-master/theories HoTT
+-docroot .
+-R /home/jdc/hott/HoTT-master/_build/default/theories HoTT
+#-R /home/jdc/hott/HoTT-master/theories HoTT
 -R . Top
 -arg -noinit
 -arg -indices-matter
