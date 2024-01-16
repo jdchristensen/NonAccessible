@@ -20,7 +20,7 @@ Definition restrict_O@{i j | i <= j} `{PropResizing} `{Funext}
 Proof.
   snrapply Build_ReflectiveSubuniverse.
   - snrapply Build_Subuniverse.
-    + exact (fun X => (resize_hprop (In O X))).           (* The predicate on Type@{i}. *)
+    + exact (fun X => (resize_hprop@{j i} (In O X))).           (* The predicate on Type@{i}. *)
     + exact _.                                            (* It's an hprop, by [ishprop_resize_hprop]. *)
     + intros T U I f feq. cbn; cbn in I.                  (* It's replete. *)
       apply equiv_resize_hprop.
@@ -81,7 +81,7 @@ Definition islocal_extended_generators@{k} (n : trunc_index)
       (X : Type@{k})
   : IsLocal (extended_generators n f) X <-> IsLocal (Build_LocalGenerators _ _ _ f) X * IsTrunc n.+1 X.
 Proof.
-  destruct (istrunc_iff_sphere_oo_null@{k k k k} n X)
+  destruct (istrunc_iff_sphere_oo_null@{k k k k k} n X)
     as [ooext_istrunc istrunc_ooext].
   split.
   - intro isLX.

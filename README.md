@@ -19,7 +19,7 @@ You will likely need to edit the _CoqProject file to make this build on your sys
 
 Also, the universe variables are sensitive to the library version (and maybe the Coq version):
 
-- The current version, from January 1, 2024, builds with Coq 8.18.0 and Coq-HoTT library version 698ca2fb from January 1, 2024.
+- Commit 9015e6d0 from January 1, 2024, builds with Coq 8.18.0 and Coq-HoTT library version 698ca2fb from January 1, 2024.
 
 - Commit 9943c0a2 from September 29, 2023, builds with Coq 8.18.0 and Coq-HoTT library version a3bde181 from September 27, 2023.
 

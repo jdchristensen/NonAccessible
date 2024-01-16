@@ -119,10 +119,7 @@ Definition conn_point_elim_beta `{Univalence} (n : trunc_index) {A : pType@{u}} 
   : conn_point_elim n P p0 (point A) = p0.
 Proof.
   unfold conn_point_elim.
-  unfold isconnected_paths.  (* Invisible to the user; see with Set Printing Implicit. *)
-  simpl.
-  unfold path_contr.
-  rewrite concat_Vp.
+  rewrite (contr (A:=Tr n (pt = pt)) (tr 1)).
   reflexivity.
 Defined.
 
