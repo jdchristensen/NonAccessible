@@ -372,7 +372,7 @@ Definition issmall_truncmap_small_truncation@{i j k u | i < k, j <= k, k < u} `{
   : IsSmall@{i j} X.
 Proof.
   apply (snd (issmall_iff_locally_small_truncated@{i j k u} n X)).
-  refine (_, sTrX).
+  nrefine (_, sTrX).
   rapply islocally_small_truncmap; assumption.
 Defined.
 
@@ -419,7 +419,7 @@ Proof.
     (* The only changes are here. *)
     + nrapply Trunc_ind; intro y.
       1: apply (@istrunc_leq (-1) n.+1 tt _ _).
-      refine (issmall_n_image@{i j k u} n (unit_name (y; idpath)) _ _).
+      nrefine (issmall_n_image@{i j k u} n (unit_name (y; idpath)) _ _).
       1: rapply conn_point_incl@{k u}. (* The fibres of (n+1)-truncation are (n+1)-connected. *)
       apply (sigma_closed_islocally_small _ _ lsX).
       intro x.
