@@ -4,8 +4,8 @@
 (* TODO: be consistent about "issmall" vs "small", "islocally" vs "locally".
    Also, should it be "islocally_small" or "islocallysmall"? *)
 (* TODO: try cumulativity again? *)
-(* TODO: Trim down imports. *)
-Require Import HoTT.
+From HoTT Require Import Basics Types.Unit Types.Sigma Types.Universe.
+From HoTT Require Import HFiber Truncations Pointed.Core Pointed.Loops PropResizing.
 
 Require Import Conn.
 Require Import misc.
