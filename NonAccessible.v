@@ -115,7 +115,7 @@ Proof.
       apply isconnected_pred.
       nrapply isconnected_sn.
   - intro X.  (* All local types are (n+2)-locally small, since S^{n+2} -> Unit is a generator. *)
-    apply islocally_small_trunc@{i k k u}.
+    apply islocally_small_trunc.
     exact (snd (fst (islocal_extended_generators n f (O X)) _)).
 Defined.
 

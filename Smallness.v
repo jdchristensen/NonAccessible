@@ -262,8 +262,7 @@ Proof.
   1: apply jc_factor2.
   apply isequiv_surj_emb.
   - nrapply (cancelR_issurjection (jc_factor1 f ls)).
-    exact (conn_map_homotopic@{k i j k} _ _ _
-            (symmetric_pointwise_paths@{k i j} _ _ _ _ (jc_factors f ls)) s).
+    exact (conn_map_homotopic _ _ _ (fun x => (jc_factors f ls x)^) s).
   - apply jc_factor2_isemb.
 Defined.
 
@@ -294,11 +293,9 @@ Definition issmall_n_image@{i j k u | i < k, j <= k, k < u} `{Univalence}
            (f : A -> X) (C : IsConnMap@{k} n f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) X)
   : IsSmall@{i j} X.
 Proof.
-  revert n A X f C ls.
-  nrapply trunc_index_rect@{u}.
-  - intros A X f C ls.  exact ls.
-  - intros n IHn A X f C ls.
-    assert (IsConnMap (Tr (-1)) f) as C' by rapply minus_one_connmap_isconnmap.
+  revert A X f C ls; simple_induction n n IHn; intros A X f C ls.
+  - exact ls.
+  - assert (IsConnMap (Tr (-1)) f) as C' by rapply minus_one_connmap_isconnmap.
     snrefine (jc_surjection _ f C').
     (* [f] is surjective and [IsSmall] is an [HProp], so we can assume that [x] and [y] are in the image of [f]. *)
     (* We speed up typeclass inference by providing this: *)
@@ -310,7 +307,7 @@ Proof.
     apply (@conn_map_elim@{k i j k} (Tr (-1)) _ _ f C' _ (fun x => HP x (f b))).
     intro a.
     snrapply (IHn (a = b) _ (ap@{i j} f)).
-    + srapply isconnmap_ap@{k u}.
+    + srapply isconnmap_ap.
     + apply ls.
 Defined.
 
