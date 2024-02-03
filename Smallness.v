@@ -205,6 +205,18 @@ Proof.
   apply islocally_small_in.
 Defined.
 
+(* If a type is n-locally small, then it is (n+1)-locally small. *)
+Definition islocally_small_succ@{i j k | i < k, j <= k} (n : nat)
+  (X : Type@{j}) (lsX : IsLocallySmall@{i j k} n X)
+  : IsLocallySmall@{i j k} n.+1 X.
+Proof.
+  revert X lsX; simple_induction n n IHn; intros X.
+  - apply islocally_small_small.
+  - intro lsX.
+    intros x y.
+    apply IHn, lsX.
+Defined.
+
 (* Sends a trunc_index [m] to the natural number [m+2]. *)
 Fixpoint trunc_index_to_nat (m : trunc_index) : nat
 := match m with
@@ -368,3 +380,54 @@ Proof.
 Defined.
 
 (** TODO: Add Prop 2.8, with simplified statement. *)
+
+(** Another approach to Theorem 2.6, that avoids propositional resizing. First we need this result. *)
+
+(** If [X] is n-locally small, then so is [Trunc k X] for any [k]. *)
+Definition islocally_small_trunc_islocally_small@{i j k u | i < k, j <= k, k < u} `{Univalence}
+  (n k : trunc_index)
+  (X : Type@{j})
+  (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) X)
+  : IsLocallySmall@{i j k} (trunc_index_to_nat n) (Trunc k X).
+Proof.
+  revert k X ls; simple_induction n n IHn; intros k X ls.
+  - cbn in *.
+    exists (Trunc@{i} k (smalltype ls)).
+    apply Trunc_functor_equiv@{i j k}, equiv_smalltype.
+  - destruct k.
+    + apply islocally_small_small.
+      rapply issmall_contr.
+    + intros a b.
+      assert (ist : forall W, IsTrunc k.+1 (IsLocallySmall (trunc_index_to_nat n) W)).
+      1: intro W; apply (@istrunc_leq (-1) k.+1 tt _ _).
+      strip_truncations.
+      apply (islocally_small_equiv_islocally_small _ (equiv_path_Tr@{_ u} a b)).
+      apply IHn, ls.
+Defined.
+
+(** A proof of Theorem 2.6, without propositional resizing. *)
+Definition issmall_iff_locally_small_truncated'@{i j k u | i < k, j <= k, k < u} `{Univalence}
+  (n : trunc_index) (X : Type@{j})
+  : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} (trunc_index_to_nat n) X * IsSmall@{i j} (Trunc n.+1 X)).
+Proof.
+  split.
+  - intro sX.
+    split.
+    + by apply islocally_small_small.
+    + apply (issmall_equiv_issmall (Trunc_functor_equiv@{i j k} _ (equiv_smalltype sX))).
+      apply issmall_in.
+  - intros [lsX sTrX].
+    apply (issmall_codomain_fibers_small (@tr n.+1 X)).
+    + exact sTrX.
+    (* The only changes are here. *)
+    + nrapply Trunc_ind; intro y.
+      1: apply (@istrunc_leq (-1) n.+1 tt _ _).
+      refine (issmall_n_image@{i j k u} n (unit_name (y; idpath)) _ _).
+      1: rapply conn_point_incl@{k u}. (* The fibres of (n+1)-truncation are (n+1)-connected. *)
+      apply (sigma_closed_islocally_small _ _ lsX).
+      intro x.
+      apply (islocally_small_equiv_islocally_small _ (equiv_path_Tr@{_ u} x y)).
+      apply islocally_small_trunc_islocally_small@{i j k u}.
+      apply islocally_small_succ in lsX.
+      apply lsX.
+Defined.
