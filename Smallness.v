@@ -1,6 +1,10 @@
 (* Facts about "small" types and non-accessible localizations. *)
 
-(* ** Trim down imports later. *)
+(* TODO: update comment style: **, [foo], indentation of hypotheses, etc. *)
+(* TODO: be consistent about "issmall" vs "small", "islocally" vs "locally".
+   Also, should it be "islocally_small" or "islocallysmall"? *)
+(* TODO: try cumulativity again? *)
+(* TODO: Trim down imports. *)
 Require Import HoTT.
 
 Require Import Conn.
@@ -35,17 +39,18 @@ Definition lower_issmall@{i j1 j2 | j1 <= j2}
   : IsSmall@{i j1} X
   := Build_IsSmall X (smalltype sX) (equiv_smalltype sX).
 
-Global Instance ishprop_issmall@{i j k | i < k, j <= k} `{Univalence} (X : Type@{j}) : IsHProp (IsSmall@{i j} X).
+Global Instance ishprop_issmall@{i j k | i < k, j <= k} `{Univalence} (X : Type@{j})
+  : IsHProp (IsSmall@{i j} X).
 Proof.
   apply hprop_inhabited_contr.
   intros [Z e].
   (* [IsSmall X] is equivalent to [IsSmall Z], which is contractible since it is a based path space. *)
   rapply (istrunc_equiv_istrunc { Y : Type@{i} & Y <~> Z } _).
-  - equiv_via (sig@{k k} (fun Y : Type@{i} => Y <~> X)).
-    2: issig.
-    apply equiv_functor_sigma_id.
-    intro Y.
-    exact (equiv_postcompose_equiv Y e).
+  equiv_via (sig@{k k} (fun Y : Type@{i} => Y <~> X)).
+  2: issig.
+  apply equiv_functor_sigma_id.
+  intro Y.
+  exact (equiv_postcompose_equiv Y e).
 Defined.
 
 (* A type in [Type@{i}] is clearly small.  Make this a Global Instance? *)
@@ -85,7 +90,6 @@ Proof.
 Defined.
 
 (* Propositional Resizing says that every (-1)-truncated type is small. *)
-(* No constraints on i and j. *)
 Definition issmall_hprop@{i j | } `{PropResizing} (X : Type@{j}) (T : IsTrunc (-1) X)
   : IsSmall@{i j} X.
 Proof.
@@ -100,7 +104,7 @@ Proof.
   apply issmall_in.
 Defined.
 
-(* This isn't yet in the paper. It lets us simplify the statement of Proposition 2.8. *)
+(* This isn't yet in the paper. It lets us simplify the statement of Proposition 2.8. Note that this implies propositional resizing, so the [PropResizing] assumption is necessary. *)
 Definition issmall_inhabited_issmall@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (X : Type@{j})
            (isX : X -> IsSmall@{i j} X)
@@ -362,3 +366,5 @@ Proof.
   refine (_, sTrX).
   rapply islocally_small_truncmap@{i j k u}; assumption.
 Defined.
+
+(** TODO: Add Prop 2.8, with simplified statement. *)
