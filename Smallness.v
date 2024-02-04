@@ -166,6 +166,27 @@ Proof.
     * apply lsA.
 Defined.
 
+(** A small type is n-locally small for all n. *)
+Definition islocally_small_small@{i j k | i < k, j <= k} (n : nat)
+  (X : Type@{j}) (sX : IsSmall@{i j} X)
+  : IsLocallySmall@{i j k} n X.
+Proof.
+  apply (islocally_small_equiv_islocally_small n (equiv_smalltype sX)).
+  apply islocally_small_in.
+Defined.
+
+(** If a type is n-locally small, then it is (n+1)-locally small. *)
+Definition islocally_small_succ@{i j k | i < k, j <= k} (n : nat)
+  (X : Type@{j}) (lsX : IsLocallySmall@{i j k} n X)
+  : IsLocallySmall@{i j k} n.+1 X.
+Proof.
+  revert X lsX; simple_induction n n IHn; intros X.
+  - apply islocally_small_small.
+  - intro lsX.
+    intros x y.
+    apply IHn, lsX.
+Defined.
+
 (** The n-locally small types are closed under dependent sums. *)
 Definition sigma_closed_islocally_small@{i j k | i < k, j <= k}
   (n : nat) {A : Type@{j}} (B : A -> Type@{j})
@@ -194,27 +215,6 @@ Proof.
   nrapply islocally_small_equiv_islocally_small.
   - exact (equiv_fibration_replacement f)^-1%equiv.
   - apply sigma_closed_islocally_small; assumption.
-Defined.
-
-(** A small type is n-locally small for all n. *)
-Definition islocally_small_small@{i j k | i < k, j <= k} (n : nat)
-  (X : Type@{j}) (sX : IsSmall@{i j} X)
-  : IsLocallySmall@{i j k} n X.
-Proof.
-  apply (islocally_small_equiv_islocally_small n (equiv_smalltype sX)).
-  apply islocally_small_in.
-Defined.
-
-(** If a type is n-locally small, then it is (n+1)-locally small. *)
-Definition islocally_small_succ@{i j k | i < k, j <= k} (n : nat)
-  (X : Type@{j}) (lsX : IsLocallySmall@{i j k} n X)
-  : IsLocallySmall@{i j k} n.+1 X.
-Proof.
-  revert X lsX; simple_induction n n IHn; intros X.
-  - apply islocally_small_small.
-  - intro lsX.
-    intros x y.
-    apply IHn, lsX.
 Defined.
 
 (** Sends a trunc_index [m] to the natural number [m+2]. *)
