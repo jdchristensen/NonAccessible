@@ -217,17 +217,19 @@ Proof.
   - apply sigma_closed_islocally_small; assumption.
 Defined.
 
-(** Sends a trunc_index [m] to the natural number [m+2]. *)
-Fixpoint trunc_index_to_nat (m : trunc_index) : nat
-  := match m with
+(** Sends a trunc_index [n] to the natural number [n+2]. *)
+Fixpoint trunc_index_to_nat (n : trunc_index) : nat
+  := match n with
     | minus_two => 0
-    | m'.+1 => (trunc_index_to_nat m').+1
+    | n'.+1 => (trunc_index_to_nat n').+1
     end.
+
+Notation "n ..+2" := (trunc_index_to_nat n) (at level 2) : trunc_scope.
 
 (** Under propositional resizing, every (n+1)-truncated type is (n+2)-locally small. This is Lemma 2.3 in the paper. *)
 Definition islocally_small_trunc@{i j k | i < k, j <= k} `{PropResizing}
   (n : trunc_index) (X : Type@{j}) (T : IsTrunc n.+1 X)
-  : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
+  : IsLocallySmall@{i j k} n..+2 X.
 Proof.
   revert n X T.
   simple_induction n n IHn; cbn.
@@ -290,7 +292,7 @@ Defined.
 (** If [f : A -> X] is n-connected, [A] is in [Type@{i}] and [X] is (n+2)-locally small, then [X] is small.  This is Proposition 2.2 from the paper. This could of course be generalized to only requiring that [A] be small. *)
 Definition issmall_n_image@{i j k u | i < k, j <= k, k < u} `{Univalence}
   (n : trunc_index) {A : Type@{i}} {X : Type@{j}}
-  (f : A -> X) (C : IsConnMap@{k} n f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) X)
+  (f : A -> X) (C : IsConnMap@{k} n f) (ls : IsLocallySmall@{i j k} n..+2 X)
   : IsSmall@{i j} X.
 Proof.
   revert A X f C ls; simple_induction n n IHn; intros A X f C ls.
@@ -314,8 +316,8 @@ Defined.
 (** If [f : X -> Y] is (n+1)-truncated and [Y] is (n+2)-locally small, then [X] is (n+2)-locally small.  This is Lemma 2.4 from the paper. When [n] is -2, it says that a subtype of a small type is small. *)
 Definition islocally_small_truncmap@{i j k | i < k, j <= k} `{PropResizing}
   (n : trunc_index) {X : Type@{j}} {Y : Type@{j}} (f : X -> Y)
-  (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
-  : IsLocallySmall@{i j k} (trunc_index_to_nat n) X.
+  (T : IsTruncMap n.+1 f) (ls : IsLocallySmall@{i j k} n..+2 Y)
+  : IsLocallySmall@{i j k} n..+2 X.
 Proof.
   apply (islocally_small_codomain_fibers_locally_small _ f).
   - exact ls.
@@ -327,7 +329,7 @@ Defined.
 (** if [f : X -> Y] is (n+1)-truncated, [X] is (n+1)-connected and [Y] is (n+2)-locally small, then [X] is small. This is Lemma 2.5 from the paper. *)
 Definition issmall_truncmap_connected@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
   (n : trunc_index) {X Y : Type@{j}} (f : X -> Y) (T : IsTruncMap n.+1 f)
-  (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
+  (ls : IsLocallySmall@{i j k} n..+2 Y)
   (C : IsConnected n.+1 X)
   : IsSmall@{i j} X.
 Proof.
@@ -342,7 +344,7 @@ Defined.
 (** [X] is small iff it is (n+2)-locally small and its (n+1)-truncation is small. This is Theorem 2.6 from the paper. *)
 Definition issmall_iff_locally_small_truncated@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
   (n : trunc_index) (X : Type@{j})
-  : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} (trunc_index_to_nat n) X * IsSmall@{i j} (Trunc n.+1 X)).
+  : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} n..+2 X * IsSmall@{i j} (Trunc n.+1 X)).
 Proof.
   split.
   - intro sX.
@@ -363,7 +365,7 @@ Defined.
 (** if [f : X -> Y] is (n+1)-truncated, the (n+1)-truncation of [X] is small and [Y] is (n+2)-locally small, then [X] is small. This is Corollary 2.7 from the paper. *)
 Definition issmall_truncmap_small_truncation@{i j k u | i < k, j <= k, k < u} `{PropResizing} `{Univalence}
   (n : trunc_index) {X Y : Type@{j}} (f : X -> Y) (T : IsTruncMap n.+1 f)
-  (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) Y)
+  (ls : IsLocallySmall@{i j k} n..+2 Y)
   (sTrX : IsSmall@{i j} (Trunc n.+1 X))
   : IsSmall@{i j} X.
 Proof.
@@ -378,9 +380,9 @@ Defined.
 
 (** If [X] is n-locally small, then so is [Trunc k X] for any [k]. *)
 Definition islocally_small_trunc_islocally_small@{i j k u | i < k, j <= k, k < u} `{Univalence}
-  (n k : trunc_index) (X : Type@{j})
-  (ls : IsLocallySmall@{i j k} (trunc_index_to_nat n) X)
-  : IsLocallySmall@{i j k} (trunc_index_to_nat n) (Trunc k X).
+  (n : nat) (k : trunc_index) (X : Type@{j})
+  (ls : IsLocallySmall@{i j k} n X)
+  : IsLocallySmall@{i j k} n (Trunc k X).
 Proof.
   revert k X ls; simple_induction n n IHn; intros k X ls.
   - cbn in *.
@@ -390,7 +392,7 @@ Proof.
     + apply islocally_small_small.
       rapply issmall_contr.
     + intros a b.
-      assert (ist : forall W, IsTrunc k.+1 (IsLocallySmall (trunc_index_to_nat n) W)).
+      assert (ist : forall W, IsTrunc k.+1 (IsLocallySmall n W)).
       1: intro W; apply (@istrunc_leq (-1) k.+1 tt _ _).
       strip_truncations.
       apply (islocally_small_equiv_islocally_small _ (equiv_path_Tr@{_ u} a b)).
@@ -400,7 +402,7 @@ Defined.
 (** A proof of Theorem 2.6, without propositional resizing. *)
 Definition issmall_iff_locally_small_truncated'@{i j k u | i < k, j <= k, k < u} `{Univalence}
   (n : trunc_index) (X : Type@{j})
-  : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} (trunc_index_to_nat n) X * IsSmall@{i j} (Trunc n.+1 X)).
+  : IsSmall@{i j} X <-> (IsLocallySmall@{i j k} n..+2 X * IsSmall@{i j} (Trunc n.+1 X)).
 Proof.
   split.
   - intro sX.

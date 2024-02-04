@@ -48,7 +48,7 @@ Defined.
 Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} `{Univalence}
            (n : trunc_index) (O : ReflectiveSubuniverse@{j})
            (C : forall X : Type@{i}, IsConnMap@{k} n (to O X))
-           (L : forall X : Type@{i}, IsLocallySmall@{i j k} (trunc_index_to_nat n) (O X))
+           (L : forall X : Type@{i}, IsLocallySmall@{i j k} n..+2 (O X))
   : ReflectiveSubuniverse@{i}.
 Proof.
   snrapply (restrict_O O).
@@ -75,7 +75,7 @@ Proof.
     + exact (fun _ => tt).
 Defined.
 
-(* Being local with respect to the extended generating set is equivalent to being n-truncated and local with respect to the original family of maps. This could be generalized as in RSS Thm 3.29. *)
+(* Being local with respect to the extended generating set is equivalent to being (n+1)-truncated and local with respect to the original family of maps. This could be generalized as in RSS Thm 3.29. *)
 Definition islocal_extended_generators@{k} (n : trunc_index)
       {I : Type@{k}} {A B : I -> Type@{k}} (f : forall i, A i -> B i)
       (X : Type@{k})
