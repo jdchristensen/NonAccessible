@@ -11,6 +11,7 @@ Lemma 2.4:        Smallness.islocally_small_truncmap
 Lemma 2.5:        Smallness.issmall_truncmap_connected
 Theorem 2.6:      Smallness.issmall_iff_locally_small_truncated
 Corollary 2.7:    Smallness.issmall_truncmap_small_truncation
+Remark 2.9:       Smallness.issmall_inhabited_issmall
 Proposition 3.2:  NonAccessible.restrict_O
 Theorem 3.3:      NonAccessible.nonaccessible_localization
 ```
