@@ -422,6 +422,6 @@ Proof.
       intro x.
       apply (islocally_small_equiv_islocally_small _ (equiv_path_Tr@{_ u} x y)).
       apply islocally_small_trunc_islocally_small@{i j k u}.
-      apply islocally_small_succ in lsX.
+      apply islocally_small_succ.
       apply lsX.
 Defined.

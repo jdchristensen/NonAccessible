@@ -5,15 +5,16 @@ A link to a talk is also available at that page.
 Here is a mapping between the results in the paper and the formalization:
 
 ```
-Proposition 2.2:  Smallness.issmall_n_image
-Lemma 2.3:        Smallness.islocally_small_trunc
-Lemma 2.4:        Smallness.islocally_small_truncmap
-Lemma 2.5:        Smallness.issmall_truncmap_connected
-Theorem 2.6:      Smallness.issmall_iff_locally_small_truncated
-Corollary 2.7:    Smallness.issmall_truncmap_small_truncation
-Remark 2.9:       Smallness.issmall_inhabited_issmall
-Proposition 3.2:  NonAccessible.restrict_O
-Theorem 3.3:      NonAccessible.nonaccessible_localization
+Proposition 2.2:          Smallness.issmall_n_image
+Lemma 2.3:                Smallness.islocally_small_trunc
+Lemma 2.4:                Smallness.islocally_small_truncmap
+Lemma 2.5:                Smallness.issmall_truncmap_connected
+Theorem 2.6:              Smallness.issmall_iff_locally_small_truncated
+Theorem 2.6 (2nd proof):  Smallness.issmall_iff_locally_small_truncated'
+Corollary 2.7:            Smallness.issmall_truncmap_small_truncation
+Remark 2.9:               Smallness.issmall_inhabited_issmall
+Proposition 3.2:          NonAccessible.restrict_O
+Theorem 3.3:              NonAccessible.nonaccessible_localization
 ```
 
 You will likely need to edit the _CoqProject file to make this build on your system.
