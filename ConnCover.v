@@ -113,14 +113,15 @@ Proof.
   rapply isconnequiv_truncmap.
 Defined.
 
-(* Not used any more, but should add this to library anyways, after conn_point_elim. *)
+(* Not used any more. *)
+(* Add this to the library, after conn_point_elim. *)
 Definition conn_point_elim_beta `{Univalence} (n : trunc_index) {A : pType@{u}} `{IsConnected n.+1 A}
            (P : A -> Type@{u}) `{forall a, IsTrunc n (P a)} (p0 : P (point A))
   : conn_point_elim n P p0 (point A) = p0.
 Proof.
   unfold conn_point_elim.
-  rewrite (contr (A:=Tr n (pt = pt)) (tr 1)).
-  reflexivity.
+  (* Since [Tr n (pt = pt)] is contractible, the center we chose is equal to [tr 1]. *)
+  exact (ap _ (contr (tr 1))).
 Defined.
 
 (* TODO: Move elsewhere. *)

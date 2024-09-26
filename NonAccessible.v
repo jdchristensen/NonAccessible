@@ -20,20 +20,20 @@ Definition restrict_O@{i j | i <= j} `{PropResizing} `{Funext}
 Proof.
   snrapply Build_ReflectiveSubuniverse.
   - snrapply Build_Subuniverse.
-    + exact (fun X => (resize_hprop@{j i} (In O X))).           (* The predicate on Type@{i}. *)
+    + exact (fun X => (smalltype@{i j} (In O X))).           (* The predicate on Type@{i}. *)
     + exact _.                                            (* It's an hprop, by [ishprop_resize_hprop]. *)
     + intros T U I f feq. cbn; cbn in I.                  (* It's replete. *)
-      apply equiv_resize_hprop.
+      apply (equiv_smalltype _)^-1%equiv.
       srapply (inO_equiv_inO T f).
-      apply (equiv_resize_hprop _)^-1%equiv.
+      apply (equiv_smalltype _).
       exact I.
   - intro X.
     snrapply Build_PreReflects.
-    + exact (smalltype (sX X)).                           (* The reflected type. *)
+    + exact (smalltype (O X)).                           (* The reflected type. *)
     + cbn.                                                (* It's in the new O. *)
-      apply equiv_resize_hprop.
-      srapply (inO_equiv_inO (O X) (equiv_smalltype (sX X))^-1%equiv).
-    + exact ((equiv_smalltype (sX X))^-1%equiv o (to O X)).  (* The map from X to the reflected type. *)
+      apply equiv_smalltype.
+      srapply (inO_equiv_inO (O X) (equiv_smalltype (O X))^-1%equiv).
+    + exact ((equiv_smalltype (O X))^-1%equiv o (to O X)).  (* The map from X to the reflected type. *)
   - intro X.                                              (* The universal property. *)
     snrapply Build_Reflects.
     intros Q Q_inO.
@@ -41,8 +41,10 @@ Proof.
     nrapply ooextendable_compose.
     + rapply ooextendable_equiv.
     + rapply extendable_to_O'.
-      exact ((equiv_resize_hprop _)^-1%equiv Q_inO).
+      exact ((equiv_smalltype _) Q_inO).
 Defined.
+
+Local Notation "n ..+2" := (trunc_index_to_nat n) (at level 2) : trunc_scope.
 
 (* This just combines [restrict_O] and [issmall_n_image]. *)
 Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} `{Univalence}
@@ -54,7 +56,6 @@ Proof.
   snrapply (restrict_O O).
   intro X.
   rapply issmall_n_image@{i j k u}.
-  apply L.
 Defined.
 
 (* Given a family of maps, form the family with the map [S^{n+2} -> Unit] added. *)
@@ -115,7 +116,7 @@ Proof.
       apply isconnected_pred.
       nrapply isconnected_sn.
   - intro X.  (* All local types are (n+2)-locally small, since S^{n+2} -> Unit is a generator. *)
-    apply islocally_small_trunc.
+    apply islocallysmall_trunc.
     exact (snd (fst (islocal_extended_generators n f (O X)) _)).
 Defined.
 
@@ -127,8 +128,9 @@ Definition in_nonaccessible_localization@{i j k u | i < k, j <= k, k < u} `{Prop
   : In (nonaccessible_localization@{i j k u} n f C) X <-> IsLocal (Build_LocalGenerators@{k} _ _ _ f) X * IsTrunc n.+1 X.
 Proof.
   (* Get rid of propositional resizing on the LHS: *)
-  apply (iff_compose@{u k} (iff_inverse@{u k} (iff_equiv (equiv_resize_hprop _)))).
-  apply (iff_compose@{u k} (islocal_extended_generators n f X)).
+  (* cbn here shows the goal clearly, but makes the Defined slow. *)
+  apply (iff_compose (iff_equiv (equiv_smalltype _))).
+  apply (iff_compose (islocal_extended_generators n f X)).
   (* Change from [IsTrunc@{i}] to [IsTrunc@{k}]. *)
   nrapply iff_functor_prod.
   - split; exact idmap.
@@ -154,46 +156,46 @@ Definition restrict_OFS@{i j | i <= j} `{PropResizing} (OFS : FactorizationSyste
   : FactorizationSystem@{i i i}.
 Proof.
   snrapply Build_FactorizationSystem.
-  - intros X Y g; exact (resize_hprop@{j i} (class1 OFS g)).
-  - intros; apply ishprop_resize_hprop.
+  - intros X Y g; exact (smalltype@{i j} (class1 OFS g)).
+  - exact _.
   - intros; simpl.
-    apply equiv_resize_hprop.
+    apply (equiv_smalltype _)^-1.
     rapply class1_isequiv.
   - intros; simpl in *.
-    apply equiv_resize_hprop.
-    apply class1_compose; rapply (equiv_resize_hprop _)^-1%equiv; assumption.
-  - intros X Y g; exact (resize_hprop@{j i} (class2 OFS g)).
-  - intros; apply ishprop_resize_hprop.
+    apply (equiv_smalltype _)^-1.
+    apply class1_compose; rapply (equiv_smalltype _); assumption.
+  - intros X Y g; exact (smalltype@{i j} (class2 OFS g)).
+  - exact _.
   - intros; simpl.
-    apply equiv_resize_hprop.
+    apply (equiv_smalltype _)^-1.
     rapply class2_isequiv.
   - intros; simpl in *.
-    apply equiv_resize_hprop.
-    apply class2_compose; rapply (equiv_resize_hprop _)^-1%equiv; assumption.
+    apply (equiv_smalltype _)^-1.
+    apply class2_compose; rapply (equiv_smalltype _); assumption.
   - intros X Y g.
     snrapply  Build_Factorization.
-    + exact (smalltype (is X Y g)).
-    + exact ((equiv_smalltype (is X Y g))^-1%equiv o (factor1 (factor OFS g))).
-    + exact ((factor2 (factor OFS g)) o (equiv_smalltype (is X Y g))).
+    + exact (smalltype (factor OFS g)).
+    + exact ((equiv_smalltype _)^-1%equiv o (factor1 (factor OFS g))).
+    + exact ((factor2 (factor OFS g)) o (equiv_smalltype _)).
     + intro x.
       refine ((ap _ _) @ _).
       * apply eisretr.
       * apply fact_factors.
-    + apply equiv_resize_hprop.
+    + apply (equiv_smalltype _)^-1.
       apply (class1_compose _ (factor1 _)).
       * apply inclass1.
       * rapply class1_isequiv.
-    + apply equiv_resize_hprop.
+    + apply (equiv_smalltype _)^-1.
       apply (class2_compose _ _ (factor2 _)).
       * apply class2_isequiv.
         (* Have to spell this out, or else Coq forces i = j for some reason: *)
-        exact (equiv_isequiv (equiv_smalltype (is X Y g))).
+        exact (equiv_isequiv (equiv_smalltype _)).
       * apply inclass2.
   - intros X Y f fact fact'.
     let T := type of fact in transparent assert (liftfact : (T -> Factorization@{j} (@class1 OFS) (@class2 OFS) f)).
     { intro facti; destruct facti.
       snrapply Build_Factorization; try assumption.
-      all: apply (equiv_resize_hprop _)^-1%equiv; assumption. }
+      all: apply (equiv_smalltype _); assumption. }
     destruct (path_factor OFS f (liftfact fact) (liftfact fact')).
     snrapply Build_PathFactorization; assumption.
 Defined.
@@ -215,8 +217,8 @@ Proof.
   intros X Y g.
   snrapply (issmall_n_image n (factor1 (factor OFS g))).
   - admit.   (* Left factor is n-connected. *)
-  - apply (islocally_small_truncmap n (factor2 (factor OFS g))).
+  - apply (islocallysmall_truncmap n (factor2 (factor OFS g))).
     + admit.  (* Right factor is (n+1)-truncated. *)
-    + apply islocally_small_in.
+    + apply islocallysmall_in.
 Admitted.
 (* Need to add universe constraints when this is finished. *)
