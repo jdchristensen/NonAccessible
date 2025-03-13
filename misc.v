@@ -9,7 +9,7 @@ Definition equiv_postcompose_equiv@{i j k u v | i <= u, j <= v, k <= u, k <= v} 
 (* This follows from equiv_induction, but we need to control universe variables. This method also avoids Univalence. *)
 (* This also follows from [equiv_postcompose_core_cat_equiv], using [hasmorext_core_type], but that also requires larger universe variables. *)
 Proof.
-  snrapply equiv_adjointify.
+  snapply equiv_adjointify.
   - exact (fun f => e oE f).
   - exact (fun g => e^-1 oE g).
   - intro g.
@@ -27,7 +27,7 @@ Definition equiv_precompose_equiv@{i j k u v | i <= u, j <= v, k <= u, k <= v} `
   : Equiv@{v u} (Y <~> Z) (X <~> Z).
 (* This follows from equiv_induction, but we need to control universe variables. This method also avoids Univalence. *)
 Proof.
-  snrapply equiv_adjointify.
+  snapply equiv_adjointify.
   - exact (fun g => g oE e).
   - exact (fun f => f oE e^-1).
   - intro f.

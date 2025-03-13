@@ -89,7 +89,7 @@ Definition isconnequiv_truncmap `{Univalence} (n : trunc_index) {X Y : pType}
 Proof.
   intros A C.
   unfold IsConnected in C.
-  snrapply isequiv_homotopic'.
+  snapply isequiv_homotopic'.
   - (* We will write the given map as a composite of three maps.  On the ends, we have [pointed_maps_as_fiber] and its inverse.  In the middle, we use that the fibers of parallel maps in a pullback square are equivalent. *)
     refine ((pointed_maps_as_fiber A Y)^-1%equiv oE _ oE pointed_maps_as_fiber A X).
     refine (equiv_functor_hfiber_ispullback' _
@@ -128,12 +128,12 @@ Defined.
 Definition pequiv_pmap_s0 `{Funext} (A : pType)
   : (psphere 0 ->** A) <~>* A.
 Proof.
-  snrapply Build_pEquiv'.
-  { snrapply equiv_adjointify.
+  snapply Build_pEquiv'.
+  { snapply equiv_adjointify.
     + intro f; exact (f South).
     + intro a.
-      snrapply Build_pMap.
-      { snrapply Susp_rec.
+      snapply Build_pMap.
+      { snapply Susp_rec.
         - exact (point _).  (* North, the basepoint of [psphere 0]. *)
         - exact a.          (* South. *)
         - contradiction. }
@@ -141,9 +141,9 @@ Proof.
     + cbn; reflexivity.
     + intro f.
       rapply path_pforall.
-      snrapply Build_pHomotopy.
+      snapply Build_pHomotopy.
       { simpl.
-        snrapply Susp_ind; simpl.
+        snapply Susp_ind; simpl.
         - symmetry; apply (point_eq f).
         - reflexivity.
         - contradiction. }
@@ -165,7 +165,7 @@ Definition isequiv_connequiv_minus_one `{Funext} {X Y : pType}
   (f : X ->* Y) (HE : isconnequiv minus_two.+1 f)
   : IsEquiv f.
 Proof.
-  nrapply isequiv_commsq.
+  napply isequiv_commsq.
   - symmetry. apply pequiv_pmap_s0_nat.
   - apply HE.  exact _.
   - exact _.
@@ -178,7 +178,7 @@ Definition isconnequiv_loops `{Funext} {X Y : pType} (n : trunc_index)
   : isconnequiv n (fmap loops f).
 Proof.
   intros A C.
-  nrapply isequiv_commsq.
+  napply isequiv_commsq.
   - intro g.
     apply path_pforall.
     srapply loop_susp_adjoint_nat_r.
@@ -214,7 +214,7 @@ Definition isequiv_iterated_loops_connequiv `{Funext} {X Y : pType} (n : nat)
   (f : X ->* Y) (HE : isconnequiv n f)
   : IsEquiv (fmap (iterated_loops n.+1) f).
 Proof.
-  nrapply isequiv_connequiv_minus_one.
+  napply isequiv_connequiv_minus_one.
   apply isconnequiv_iterated_loops.
   refine (transport (fun k => isconnequiv k f) _ HE).
   symmetry; apply trunc_index_inc'_zero.

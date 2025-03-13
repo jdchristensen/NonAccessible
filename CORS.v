@@ -41,22 +41,22 @@ Proof.
   2: make_equiv.
   (* We strip off the outer layer: *)
   unfold lifts.
-  snrapply equiv_functor_sigma_id; intro h; cbn.
+  snapply equiv_functor_sigma_id; intro h; cbn.
   (* Rearrange the domain sigma type: *)
   refine (_ oE equiv_sigma_symm _).
   (* Strip off the outer layer: *)
-  snrapply equiv_functor_sigma_id; intro H2; cbn.
+  snapply equiv_functor_sigma_id; intro H2; cbn.
   (* Apply path_sigma inside the codomain and then equiv_forall_sigma: *)
   refine (_ oE _).
-  { nrapply equiv_functor_forall_id.  (* [Funext] is used here. *)
+  { napply equiv_functor_forall_id.  (* [Funext] is used here. *)
     intro a.
     apply equiv_path_sigma. }
   cbn.
   refine (equiv_sig_coind _ _ oE _); cbn.
   (* Strip off the outer layer: *)
-  snrapply equiv_functor_sigma_id; intro H1; cbn.
+  snapply equiv_functor_sigma_id; intro H1; cbn.
   (* Handle the innermost types, focusing on the codomain: *)
-  snrapply equiv_functor_forall_id; intro a; cbn.
+  snapply equiv_functor_forall_id; intro a; cbn.
   refine (equiv_concat_l _ _ oE _).
   1: apply transport_paths_Fl.
   refine (equiv_path_inverse _ _ oE _).
@@ -144,20 +144,20 @@ Definition equiv_lifts_fiber `{Funext} {A B C D : Type}
   : lifts S <~> hfiber (lift_comparison_map c m) (f; (g; S)).
 Proof.
   unfold lifts, hfiber, lift_comparison_map.
-  nrapply equiv_functor_sigma_id; intro h.
+  napply equiv_functor_sigma_id; intro h.
   refine (equiv_path_sigma _ _ _ oE _); cbn.
-  snrapply equiv_functor_sigma'.
+  snapply equiv_functor_sigma'.
   1: apply equiv_path_forall.
   intro H1; cbn.
   rewrite transport_sigma'; cbn.  (* Rewrites could be removed... *)
   rewrite (transport_homotopy_l_path_forall m _ _ f H1 _).
   refine (equiv_path_sigma _ _ _ oE _); cbn.
-  snrapply equiv_functor_sigma'.
+  snapply equiv_functor_sigma'.
   1: apply equiv_path_forall.
   intro H2; cbn.
   rewrite (transport_homotopy_r_path_forall c _ _ g H2 _).
   refine (equiv_path_forall _ _ oE _).
-  snrapply equiv_functor_forall_id; intro a; cbn.
+  snapply equiv_functor_forall_id; intro a; cbn.
   refine (equiv_path_inverse _ _ oE _).
   rewrite concat_p1.
   rewrite ap_V.
@@ -174,11 +174,11 @@ Proof.
   unfold unique_lifting, IsTruncMap.
   (* We split apart the Sigma type in the codomain. *)
   refine (equiv_sig_ind _ oE _).
-  snrapply equiv_functor_forall_id; intro f; cbn.
+  snapply equiv_functor_forall_id; intro f; cbn.
   refine (equiv_sig_ind _ oE _).
-  snrapply equiv_functor_forall_id; intro g; cbn.
-  snrapply equiv_functor_forall_id; intro S; cbn.
-  nrapply (equiv_inO_equiv (Tr (-2))).
+  snapply equiv_functor_forall_id; intro g; cbn.
+  snapply equiv_functor_forall_id; intro S; cbn.
+  napply (equiv_inO_equiv (Tr (-2))).
   apply equiv_lifts_fiber.
 Defined.
 
@@ -189,10 +189,10 @@ Lemma equiv_isequiv_compose_Ef_f `{Funext} {A B C : Type}
 Proof.
   apply equiv_iff_hprop.
   - intro fe.
-    snrapply (isequiv_homotopic _ K).
+    snapply (isequiv_homotopic _ K).
     apply isequiv_compose.
   - intro ge.
-    nrapply cancelL_isequiv.
+    napply cancelL_isequiv.
     1: exact ee.
     apply (isequiv_homotopic _ (symmetric_pointwise_paths _ _ _ _ K)).
 Defined.
@@ -221,7 +221,7 @@ Proof.
   refine (_ oE unique_lifting_iff_isequiv_lift_comparison c m).
   unfold IsPullback.
   unfold pullback_corec, lift_comparison_map.
-  snrapply equiv_isequiv_compose_f_Ef.
+  snapply equiv_isequiv_compose_f_Ef.
   - unfold Pullback.
     apply equiv_functor_sigma_id; intro f.
     apply equiv_functor_sigma_id; intro g.
@@ -243,15 +243,15 @@ Definition unique_lifting_conn_modal `{Funext} (O : ReflectiveSubuniverse)
   : unique_lifting c m.
 Proof.
   intros f g S.
-  nrapply contr_equiv'.
+  napply contr_equiv'.
   1: symmetry; apply equiv_lifts_sections.
-  snrapply (contr_equiv' (hfiber (fun (l : forall b, hfiber m (g b)) => l oD c) (fun a => (f a; S a)))).
+  snapply (contr_equiv' (hfiber (fun (l : forall b, hfiber m (g b)) => l oD c) (fun a => (f a; S a)))).
   2: { apply contr_map_isequiv.
-       nrapply (isequiv_o_conn_map O).
+       napply (isequiv_o_conn_map O).
        - assumption.
        - exact (fun b => H1 (g b)). }
   unfold hfiber.
-  snrapply equiv_functor_sigma_id; intro l; cbn.
+  snapply equiv_functor_sigma_id; intro l; cbn.
   symmetry.
   apply equiv_path_forall.
 Defined.
@@ -281,8 +281,8 @@ Proof.
   apply isequiv_contr_map.
   intro h.
   unfold hfiber.
-  nrapply (@contr_equiv' _ _ _ (E i h)).
-  - snrapply equiv_functor_sigma_id.
+  napply (@contr_equiv' _ _ _ (E i h)).
+  - snapply equiv_functor_sigma_id.
     intro g.
     rapply equiv_path_forall.
 Defined.
@@ -293,8 +293,8 @@ Lemma unique_extension_islocal `{Funext}
   : forall i (h : lgen_domain f i -> X), Contr { g : lgen_codomain f i -> X & g o (f i) == h }.
 Proof.
   intros i h.
-  nrapply contr_equiv'.
-  - nrapply equiv_functor_sigma_id.
+  napply contr_equiv'.
+  - napply equiv_functor_sigma_id.
     intro g; cbn.
     apply equiv_ap10.
   - apply contr_map_isequiv.
@@ -309,7 +309,7 @@ Lemma contr_sigma2_contr {A : Type} {B : A -> Type}
            (H : Contr { a : A & { b : B a & C a b } })
   : Contr { a : A & B a }.
 Proof.
-  snrapply (@contr_retract _ _ H).
+  snapply (@contr_retract _ _ H).
   - intros [a [b c]].  exact (a; b).
   - intros [a b].  exact (a; b; s a b).
   - reflexivity.
@@ -398,10 +398,10 @@ Proof.
   pose (fact := image@{k j j j j} O eta).
   set (factsave := fact).
   destruct fact as [I l r h lOconn rinO].
-  snrapply (conn_map_homotopic O (r o l) eta h).
-  snrapply conn_map_compose.
+  snapply (conn_map_homotopic O (r o l) eta h).
+  snapply conn_map_compose.
   1: exact lOconn.
-  snrapply conn_map_isequiv.
+  snapply conn_map_isequiv.
   (** We prove some of isequiv_adjointify here, as [k] gets used in two branches. *)
   (** This is a "no typeclasses" form of [transparent assert], which is faster here: *)
   snrefine (let l' := (_ : O_reflector (Loc f) X -> I) in _).
@@ -411,8 +411,8 @@ Proof.
     rapply (inO_domain_mapinO@{k k k k k k k k k k k k k k k k k k k k k k k k k k k k j} _ _ _ _ r). }
   snrefine (let k := (_ : r o l' == idmap) in _).
   { apply O_indpaths. exact h. }
-  snrapply (isequiv_adjointify r l' k).
-  snrapply (homotopic_filler_idmap (O_factsys O) eta factsave); cbn.
+  snapply (isequiv_adjointify r l' k).
+  snapply (homotopic_filler_idmap (O_factsys O) eta factsave); cbn.
   - intro x.
     exact (ap l' (h x)).
   - intro i; exact (k (r i))^.
@@ -426,7 +426,7 @@ Proof.
     refine ((concat_p1 _)^ @ (_ @@ _)).
     1: symmetry; apply (ap_compose l' r (h x)).
     refine (_ @ (_^ @@ 1)).
-    2: nrapply O_indpaths_beta.
+    2: napply O_indpaths_beta.
     refine ((concat_pV (h x))^ @ _).
     refine (1 @@ _).
     apply ap.

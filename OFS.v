@@ -10,12 +10,12 @@ Definition isequiv_in_left_and_right (F : FactorizationSystem)
   : IsEquiv f.
 Proof.
   transparent assert (fact1 : (Factorization (@class1 F) (@class2 F) f)).
-  { snrapply (Build_Factorization Y f equiv_idmap).
+  { snapply (Build_Factorization Y f equiv_idmap).
     - reflexivity.
     - assumption.
     - rapply class2_isequiv. }
   transparent assert (fact2 : (Factorization (@class1 F) (@class2 F) f)).
-  { snrapply (Build_Factorization X equiv_idmap f).
+  { snapply (Build_Factorization X equiv_idmap f).
     - reflexivity.
     - rapply class1_isequiv.
     - assumption. }
@@ -38,12 +38,12 @@ Definition isequiv_path_factorization `{Univalence} (F : FactorizationSystem)
            (path_factor2 : factor2 fact == factor2 fact' o path_intermediate)
   : IsEquiv path_intermediate.
 Proof.
-  nrapply (isequiv_in_left_and_right F).
-  - snrapply (cancelR_class1 _ (factor1 fact)).
+  napply (isequiv_in_left_and_right F).
+  - snapply (cancelR_class1 _ (factor1 fact)).
     + apply inclass1.
     + refine (transport (fun g => class1 F g) (path_forall _ _ path_factor1)^ _).
       apply inclass1.
-  - snrapply (cancelL_class2 _ _ (factor2 fact')).
+  - snapply (cancelL_class2 _ _ (factor2 fact')).
     + apply inclass2.
     + refine (transport (fun g => class2 F g) (path_forall _ _ path_factor2) _).
       apply inclass2.
@@ -64,19 +64,19 @@ Definition homotopic_filler_idmap `{Univalence} (F : FactorizationSystem)
 Proof.
   apply ap10.
   transparent assert (eq : (intermediate fact <~> intermediate fact)).
-  { snrapply (Build_Equiv _ _ path_intermediate').
+  { snapply (Build_Equiv _ _ path_intermediate').
     apply isequiv_path_factorization; assumption. }
   transparent assert (PF : (PathFactorization fact fact)).
-  { snrapply (Build_PathFactorization _ _ eq); assumption. }
+  { snapply (Build_PathFactorization _ _ eq); assumption. }
   transparent assert (PF' : (PathFactorization fact fact)).
-  { snrapply (Build_PathFactorization _ _ equiv_idmap).
+  { snapply (Build_PathFactorization _ _ equiv_idmap).
     1, 2: reflexivity.
     intro a. apply concat_1p. }
   nrefine (@ap _ _ equiv_fun eq equiv_idmap _).
   nrefine (@ap _ _ path_intermediate PF PF' _).
-  nrapply path_contr.
+  napply path_contr.
   nrefine (contr_equiv' _ _).
   1: exact (equiv_path_factorization fact fact)^-1%equiv.
-  nrapply contr_paths_contr.
+  napply contr_paths_contr.
   exact (contr_factor F f).
 Defined.

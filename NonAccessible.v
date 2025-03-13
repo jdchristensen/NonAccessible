@@ -18,8 +18,8 @@ Definition restrict_O@{i j | i <= j} `{PropResizing} `{Funext}
            (sX : forall X : Type@{i}, IsSmall@{i j} (O X))
   : ReflectiveSubuniverse@{i}.
 Proof.
-  snrapply Build_ReflectiveSubuniverse.
-  - snrapply Build_Subuniverse.
+  snapply Build_ReflectiveSubuniverse.
+  - snapply Build_Subuniverse.
     + exact (fun X => (smalltype@{i j} (In O X))).           (* The predicate on Type@{i}. *)
     + exact _.                                            (* It's an hprop, by [ishprop_resize_hprop]. *)
     + intros T U I f feq. cbn; cbn in I.                  (* It's replete. *)
@@ -28,17 +28,17 @@ Proof.
       apply (equiv_smalltype _).
       exact I.
   - intro X.
-    snrapply Build_PreReflects.
+    snapply Build_PreReflects.
     + exact (smalltype (O X)).                           (* The reflected type. *)
     + cbn.                                                (* It's in the new O. *)
       apply equiv_smalltype.
       srapply (inO_equiv_inO (O X) (equiv_smalltype (O X))^-1%equiv).
     + exact ((equiv_smalltype (O X))^-1%equiv o (to O X)).  (* The map from X to the reflected type. *)
   - intro X.                                              (* The universal property. *)
-    snrapply Build_Reflects.
+    snapply Build_Reflects.
     intros Q Q_inO.
     cbn; cbn in Q_inO.
-    nrapply ooextendable_compose.
+    napply ooextendable_compose.
     + rapply ooextendable_equiv.
     + rapply extendable_to_O'.
       exact ((equiv_smalltype _) Q_inO).
@@ -53,7 +53,7 @@ Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} 
            (L : forall X : Type@{i}, IsLocallySmall@{i j k} n..+2 (O X))
   : ReflectiveSubuniverse@{i}.
 Proof.
-  snrapply (restrict_O O).
+  snapply (restrict_O O).
   intro X.
   rapply issmall_n_image@{i j k u}.
 Defined.
@@ -63,7 +63,7 @@ Local Definition extended_generators@{j} (n : trunc_index)
       {I : Type@{j}} {A B : I -> Type@{j}} (f : forall i, A i -> B i)
   : LocalGenerators@{j}.
 Proof.
-  snrapply Build_LocalGenerators.
+  snapply Build_LocalGenerators.
   - exact (sum@{j j} I Unit).
   - intros [i | u].
     + exact (A i).
@@ -90,7 +90,7 @@ Proof.
     + intro a; cbn.
       exact (isLX (inl a)).
     + apply istrunc_ooext.
-      rapply (@ooextendable_islocal _ _ _ (inr tt)).
+      tapply (@ooextendable_islocal _ _ _ (inr tt)).
   - intros [isLX isTrX].
     intros [a | b].
     + apply isLX.
@@ -106,7 +106,7 @@ Definition nonaccessible_localization@{i j k u | i < k, j <= k, k < u} `{PropRes
 Proof.
   (* We first form the localization in a universe [k], with [i < k] and [j <= k].  Having [O] in the context helps at the end of the proof. *)
   pose (O := Loc@{k k} (extended_generators n f)).
-  snrapply (restrict_O'@{i k k u} n O).
+  snapply (restrict_O'@{i k k u} n O).
   - intro X.
     apply eta_connected_generators_connected_tr@{k k u}.
     intros [i | u].
@@ -114,7 +114,7 @@ Proof.
     + cbn.
       apply conn_map_to_unit_isconnected@{k k}.
       apply isconnected_pred.
-      nrapply isconnected_sn.
+      napply isconnected_sn.
   - intro X.  (* All local types are (n+2)-locally small, since S^{n+2} -> Unit is a generator. *)
     apply islocallysmall_trunc.
     exact (snd (fst (islocal_extended_generators n f (O X)) _)).
@@ -132,7 +132,7 @@ Proof.
   apply (iff_compose (iff_equiv (equiv_smalltype _))).
   apply (iff_compose (islocal_extended_generators n f X)).
   (* Change from [IsTrunc@{i}] to [IsTrunc@{k}]. *)
-  nrapply iff_functor_prod.
+  napply iff_functor_prod.
   - split; exact idmap.
   - split; exact (@istrunc_equiv_istrunc _ _ equiv_idmap _).
 Defined.
@@ -143,7 +143,7 @@ Definition rsu_from_group_surjections@{i j k u | i < k, j <= k, k < u} `{PropRes
            (S : forall i, IsSurjection (f i))
   : ReflectiveSubuniverse@{i}.
 Proof.
-  snrapply (nonaccessible_localization@{i j k u} 0).
+  snapply (nonaccessible_localization@{i j k u} 0).
   4: exact (fun i => fmap pClassifyingSpace (f i)).
   intro i;
   apply isconn_map_functor_pclassifyingspace@{j u};
@@ -155,7 +155,7 @@ Definition restrict_OFS@{i j | i <= j} `{PropResizing} (OFS : FactorizationSyste
            (is : forall (X Y : Type@{i}) (f : X -> Y), IsSmall@{i j} (factor OFS f))
   : FactorizationSystem@{i i i}.
 Proof.
-  snrapply Build_FactorizationSystem.
+  snapply Build_FactorizationSystem.
   - intros X Y g; exact (smalltype@{i j} (class1 OFS g)).
   - exact _.
   - intros; simpl.
@@ -173,7 +173,7 @@ Proof.
     apply (equiv_smalltype _)^-1.
     apply class2_compose; rapply (equiv_smalltype _); assumption.
   - intros X Y g.
-    snrapply  Build_Factorization.
+    snapply  Build_Factorization.
     + exact (smalltype (factor OFS g)).
     + exact ((equiv_smalltype _)^-1%equiv o (factor1 (factor OFS g))).
     + exact ((factor2 (factor OFS g)) o (equiv_smalltype _)).
@@ -194,10 +194,10 @@ Proof.
   - intros X Y f fact fact'.
     let T := type of fact in transparent assert (liftfact : (T -> Factorization@{j} (@class1 OFS) (@class2 OFS) f)).
     { intro facti; destruct facti.
-      snrapply Build_Factorization; try assumption.
+      snapply Build_Factorization; try assumption.
       all: apply (equiv_smalltype _); assumption. }
     destruct (path_factor OFS f (liftfact fact) (liftfact fact')).
-    snrapply Build_PathFactorization; assumption.
+    snapply Build_PathFactorization; assumption.
 Defined.
 
 (* RSS Theorem 2.41, which I don't think has been formalized. *)
@@ -215,7 +215,7 @@ Proof.
   pose (OFS := OFS_from_family (extended_generators n f)).
   apply (restrict_OFS OFS).
   intros X Y g.
-  snrapply (issmall_n_image n (factor1 (factor OFS g))).
+  snapply (issmall_n_image n (factor1 (factor OFS g))).
   - admit.   (* Left factor is n-connected. *)
   - apply (islocallysmall_truncmap n (factor2 (factor OFS g))).
     + admit.  (* Right factor is (n+1)-truncated. *)
