@@ -23,6 +23,8 @@ You will likely need to edit the _CoqProject file to make this build on your sys
 
 Also, the universe variables are sensitive to the library version (and maybe the Coq version):
 
+- Commit 61d56b17 from March 13, 2025 builds with Coq 8.20.1 and Coq-HoTT library version dd2ca5cb from March 11, 2025.
+
 - Commit e6cf3466 from September 26, 2024 builds with Coq 8.19.1 and Coq-HoTT library version b0082605 from Sep 26, 2024.
 Some parts of the file Smallness.v have now been merged into Coq-HoTT in Universes/Smallness.v.
 
