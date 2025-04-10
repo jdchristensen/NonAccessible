@@ -190,7 +190,7 @@ Proof.
   apply equiv_iff_hprop.
   - intro fe.
     snapply (isequiv_homotopic _ K).
-    apply isequiv_compose.
+    rapply isequiv_compose.
   - intro ge.
     napply cancelL_isequiv.
     1: exact ee.
