@@ -6,7 +6,7 @@ Require Import HoTT.Factorization.
 
 Require Import CORS.
 Require Import Conn.
-Require Import Smallness.
+Require Import Top.Smallness.
 Require Import misc.
 
 (* See Smallness.v for a discussion of universe variables. *)
