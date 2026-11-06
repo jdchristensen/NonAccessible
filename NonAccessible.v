@@ -44,7 +44,7 @@ Proof.
       exact ((equiv_smalltype _) Q_inO).
 Defined.
 
-Local Notation "n ..+2" := (trunc_index_to_nat n) (at level 2) : trunc_scope.
+Local Notation "n ..+2" := (trunc_index_to_nat n) (at level 1) : trunc_scope.
 
 (* This just combines [restrict_O] and [issmall_n_image]. *)
 Definition restrict_O'@{i j k u | i <= j, i < k, j <= k, k < u} `{PropResizing} `{Univalence}
