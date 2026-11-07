@@ -24,6 +24,8 @@ You will likely need to edit the _CoqProject file to make this build on your sys
 Also, the universe variables are sensitive to the library version (and maybe the Coq version).
 Here are some tested version.  Nearby versions should work as well.
 
+- Commit 0541d960 from November 6, 2026 has been tested with Rocq 9.2.0 against commit 4d1c12c4 of Coq-HoTT from Nov 7, 2026.
+
 - Commit 46fa5a02 from November 1, 2025 builds with Rocq 9.0 and 9.1 and Coq-HoTT library version 5c938e4f from October 31, 2025.
 
 - Commit 61d56b17 from March 13, 2025 builds with Coq 8.20.1 and Coq-HoTT library version dd2ca5cb from March 11, 2025.
